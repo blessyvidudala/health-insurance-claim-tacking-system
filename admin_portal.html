@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CareClaim - Administrative Claims Authority</title>
+  <link rel="stylesheet" href="css/portal-theme.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%236b21a8'><path d='M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z'/></svg>">
+</head>
+<body>
+
+  <!-- Top Navigation Header -->
+  <header class="app-header">
+    <div class="nav-container">
+      <div class="brand-wrapper">
+        <div class="brand-icon" style="background: linear-gradient(135deg, #6b21a8, #4f46e5);">🛡️</div>
+        <div>
+          <div class="brand-title">CareClaim</div>
+          <span class="portal-badge admin">Admin Portal</span>
+        </div>
+      </div>
+
+      <!-- Quick Switcher to Other Portals -->
+      <div class="nav-center-pills">
+        <a href="patient_portal.html" class="nav-pill">👤 Patient Portal</a>
+        <a href="officer_portal.html" class="nav-pill">🩺 Officer Portal</a>
+        <a href="admin_portal.html" class="nav-pill active">🛡️ Admin Portal</a>
+        <a href="index.html" class="nav-pill">🌐 Hub</a>
+      </div>
+
+      <!-- User Panel -->
+      <div class="nav-actions">
+        <div id="admin-nav-user">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Portal Body -->
+  <main class="main-content">
+
+    <!-- ==========================================
+         AUTH SECTION (When logged out)
+         ========================================== -->
+    <section id="admin-auth-section" style="max-width: 460px; margin: 3rem auto; display: none;">
+      <div class="card" style="box-shadow: var(--shadow-lg); border-top: 4px solid #6b21a8;">
+        <div class="card-header" style="text-align: center; display: block; border-bottom: none;">
+          <div style="font-size: 2.2rem; margin-bottom: 0.5rem;">🛡️</div>
+          <h2 style="font-size: 1.5rem; font-weight: 800;">Administrator Login</h2>
+          <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.25rem;">Enterprise claims settlement, policy management & officer assignment</p>
+        </div>
+
+        <div class="card-body">
+          <!-- 1-Click Demo Login -->
+          <div style="background: #f5f3ff; border: 1px dashed #c4b5fd; border-radius: var(--radius-md); padding: 0.75rem; margin-bottom: 1.25rem;">
+            <div style="font-size: 0.75rem; font-weight: 700; color: #6b21a8; text-transform: uppercase; margin-bottom: 0.35rem;">⚡ 1-Click Admin Access</div>
+            <button type="button" class="btn btn-sm btn-primary" style="width: 100%; font-size: 0.85rem; background: #6b21a8;" onclick="AdminApp.quickLogin('admin@healthclaim.com', 'admin123')">
+              🛡️ Sign In as Chief Administrator
+            </button>
+          </div>
+
+          <form id="form-admin-login" onsubmit="AdminApp.handleLogin(event)">
+            <div class="form-group">
+              <label class="form-label">Administrator Email *</label>
+              <input type="email" id="admin-email" class="form-control" required placeholder="admin@healthclaim.com" value="admin@healthclaim.com">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Password *</label>
+              <input type="password" id="admin-pass" class="form-control" required placeholder="••••••••" value="admin123">
+            </div>
+            <button type="submit" class="btn btn-primary" style="width: 100%; background: #6b21a8; margin-top: 0.5rem;">Sign In to Admin Console</button>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         DASHBOARD SECTION (When logged in)
+         ========================================== -->
+    <section id="admin-dashboard-section" style="display: none;">
+      
+      <!-- Welcome Banner -->
+      <div class="portal-banner admin">
+        <div>
+          <h1 class="banner-title">Health Insurance Administration Center</h1>
+          <p class="banner-desc">Manage registered policyholders, assign claims to clinical audit officers, authorize payouts, and configure insurance policies.</p>
+        </div>
+        <div>
+          <button class="btn btn-secondary" style="background: white; color: #4f46e5; font-weight: 700;" onclick="AdminApp.openCreatePolicyModal()">
+            ➕ New Policy
+          </button>
+        </div>
+      </div>
+
+      <!-- Navigation Tabs inside Admin -->
+      <div style="display: flex; gap: 0.5rem; margin-bottom: 1.5rem; border-bottom: 2px solid var(--border); padding-bottom: 0.5rem; overflow-x: auto;">
+        <button class="btn btn-sm btn-secondary admin-tab-btn active" id="tab-btn-dashboard" onclick="AdminApp.switchMainTab('dashboard')">📊 Dashboard & KPIs</button>
+        <button class="btn btn-sm btn-secondary admin-tab-btn" id="tab-btn-claims" onclick="AdminApp.switchMainTab('claims')">📑 All Submitted Claims</button>
+        <button class="btn btn-sm btn-secondary admin-tab-btn" id="tab-btn-users" onclick="AdminApp.switchMainTab('users')">👥 Registered Users</button>
+        <button class="btn btn-sm btn-secondary admin-tab-btn" id="tab-btn-policies" onclick="AdminApp.switchMainTab('policies')">🛡️ Insurance Policies</button>
+        <button class="btn btn-sm btn-secondary admin-tab-btn" id="tab-btn-reports" onclick="AdminApp.switchMainTab('reports')">📈 Reports & Analytics</button>
+      </div>
+
+      <!-- SUB-SECTION 1: Dashboard Statistics & KPIs -->
+      <div id="sec-dashboard">
+        <div class="kpi-grid">
+          <div class="kpi-card">
+            <div>
+              <div class="kpi-title">Total Lodged Claims</div>
+              <div class="kpi-value" id="kpi-total-claims">0</div>
+              <div class="kpi-sub">Across all policyholders</div>
+            </div>
+            <div class="kpi-icon" style="background: var(--primary-light); color: var(--primary);">📋</div>
+          </div>
+
+          <div class="kpi-card">
+            <div>
+              <div class="kpi-title">Total Claimed Value</div>
+              <div class="kpi-value" id="kpi-total-claimed">$0</div>
+              <div class="kpi-sub">Hospitalization costs claimed</div>
+            </div>
+            <div class="kpi-icon" style="background: var(--warning-light); color: var(--warning);">💰</div>
+          </div>
+
+          <div class="kpi-card">
+            <div>
+              <div class="kpi-title">Settled Payouts</div>
+              <div class="kpi-value" id="kpi-total-paid" style="color: var(--success);">$0</div>
+              <div class="kpi-sub">Disbursed to patients</div>
+            </div>
+            <div class="kpi-icon" style="background: var(--success-light); color: var(--success);">🏦</div>
+          </div>
+
+          <div class="kpi-card">
+            <div>
+              <div class="kpi-title">Settlement Rate</div>
+              <div class="kpi-value" id="kpi-approval-rate" style="color: #6b21a8;">0%</div>
+              <div class="kpi-sub">Approval & settlement ratio</div>
+            </div>
+            <div class="kpi-icon" style="background: #f3e8ff; color: #6b21a8;">📈</div>
+          </div>
+
+          <div class="kpi-card">
+            <div>
+              <div class="kpi-title">Pending Action</div>
+              <div class="kpi-value" id="kpi-pending-action" style="color: var(--danger);">0</div>
+              <div class="kpi-sub">Requires assignment or review</div>
+            </div>
+            <div class="kpi-icon" style="background: var(--danger-light); color: var(--danger);">⏳</div>
+          </div>
+
+          <div class="kpi-card">
+            <div>
+              <div class="kpi-title">Registered Accounts</div>
+              <div class="kpi-value" id="kpi-total-users">0</div>
+              <div class="kpi-sub">Patients & claim officers</div>
+            </div>
+            <div class="kpi-icon" style="background: var(--bg-subtle); color: var(--text-primary);">👥</div>
+          </div>
+        </div>
+
+        <!-- Visual Analytics Grid -->
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 2rem;">
+          <!-- Claims by Status Progress Chart -->
+          <div class="card" style="margin-bottom: 0;">
+            <div class="card-header">
+              <h3 class="card-title">📊 Claims Distribution by Status</h3>
+            </div>
+            <div id="status-chart-container">
+              <!-- Rendered by JS -->
+            </div>
+          </div>
+
+          <!-- Claim Officer Workload -->
+          <div class="card" style="margin-bottom: 0;">
+            <div class="card-header">
+              <h3 class="card-title">🩺 Claim Officer Audit Workload</h3>
+            </div>
+            <div id="workload-chart-container">
+              <!-- Rendered by JS -->
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SUB-SECTION 2: All Submitted Claims & Adjudication -->
+      <div id="sec-claims" style="display: none;">
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <h2 class="card-title">📑 Master Claims Queue</h2>
+              <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.2rem;">Assign claims to officers, approve reimbursements, complete payments, and manage rejections</p>
+            </div>
+            <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+              <button class="btn btn-sm btn-secondary" onclick="AdminApp.renderClaimsTable('ALL')">All Claims</button>
+              <button class="btn btn-sm btn-secondary" onclick="AdminApp.renderClaimsTable('Submitted')">Submitted (New)</button>
+              <button class="btn btn-sm btn-secondary" onclick="AdminApp.renderClaimsTable('Under Review')">Under Review</button>
+              <button class="btn btn-sm btn-secondary" onclick="AdminApp.renderClaimsTable('Documents Required')">Docs Requested</button>
+              <button class="btn btn-sm btn-secondary" onclick="AdminApp.renderClaimsTable('Payment Completed')">Settled</button>
+            </div>
+          </div>
+
+          <div class="table-responsive">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Claim ID</th>
+                  <th>Patient / Policyholder</th>
+                  <th>Hospital / Ailment</th>
+                  <th>Amount ($)</th>
+                  <th>Status</th>
+                  <th>Assigned Officer</th>
+                  <th>Adjudication Actions</th>
+                </tr>
+              </thead>
+              <tbody id="admin-claims-tbody">
+                <!-- Rendered dynamically -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- SUB-SECTION 3: View All Registered Users -->
+      <div id="sec-users" style="display: none;">
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <h2 class="card-title">👥 All Registered Users</h2>
+              <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.2rem;">Registry of policyholders, clinical claim officers, and administrators</p>
+            </div>
+          </div>
+
+          <div class="table-responsive">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>User ID</th>
+                  <th>Name & Email</th>
+                  <th>Role</th>
+                  <th>Phone</th>
+                  <th>Linked Policy</th>
+                  <th>Claims Count</th>
+                  <th>Enrolled Date</th>
+                </tr>
+              </thead>
+              <tbody id="admin-users-tbody">
+                <!-- Rendered dynamically -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- SUB-SECTION 4: Manage Insurance Policies -->
+      <div id="sec-policies" style="display: none;">
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <h2 class="card-title">🛡️ Insurance Policies Management</h2>
+              <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.2rem;">Configure coverage tiers, deductible rates, copay rules, and member validity</p>
+            </div>
+            <button class="btn btn-primary btn-sm" onclick="AdminApp.openCreatePolicyModal()">+ Add New Policy</button>
+          </div>
+
+          <div id="admin-policies-container">
+            <!-- Rendered dynamically -->
+          </div>
+        </div>
+      </div>
+
+      <!-- SUB-SECTION 5: Generate Claim Reports -->
+      <div id="sec-reports" style="display: none;">
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <h2 class="card-title">📈 Claim Audit Reports & Export</h2>
+              <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.2rem;">Generate certified reports, financial summaries, and export claim data to CSV</p>
+            </div>
+            <div style="display: flex; gap: 0.5rem;">
+              <button class="btn btn-success btn-sm" onclick="AdminApp.downloadCsvReport()">📥 Export CSV Report</button>
+              <button class="btn btn-secondary btn-sm" onclick="window.print()">🖨️ Print Audit Summary</button>
+            </div>
+          </div>
+
+          <div style="background: var(--bg-subtle); padding: 1.25rem; border-radius: var(--radius-md); margin-bottom: 1.5rem;">
+            <h4 style="font-size: 0.95rem; font-weight: 700; margin-bottom: 0.75rem;">Audit Export Configuration</h4>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; font-size: 0.85rem;">
+              <div>Data Format: <strong>UTF-8 RFC-4180 CSV</strong></div>
+              <div>Columns: <strong>Claim ID, Policy, Patient, Hospital, Ailment, Claimed, Approved, Status, Officer, Date, Payment Ref</strong></div>
+              <div>Audit Integrity: <strong>SHA-256 Checksum Verified</strong></div>
+            </div>
+          </div>
+
+          <div style="text-align: center; padding: 2rem;">
+            <p style="color: var(--text-secondary); margin-bottom: 1rem;">Click below to download the latest system-wide claims registry in CSV format for executive reporting.</p>
+            <button class="btn btn-primary" onclick="AdminApp.downloadCsvReport()" style="padding: 0.75rem 2rem; font-size: 1rem;">
+              📥 Download Complete Claims Audit CSV
+            </button>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- ==========================================
+       MODAL: Assign Claim to Claim Officer
+       ========================================== -->
+  <div class="modal-overlay" id="assign-officer-modal">
+    <div class="modal-container">
+      <div class="modal-header">
+        <div class="modal-title">🩺 Assign Claim to Claim Officer</div>
+        <button class="modal-close" onclick="AdminApp.closeModal('assign-officer-modal')">&times;</button>
+      </div>
+      <form onsubmit="AdminApp.handleAssignSubmit(event)">
+        <input type="hidden" id="assign-claim-id">
+        <div class="modal-body">
+          <div style="font-weight: 700; color: var(--primary); margin-bottom: 1rem;" id="assign-claim-info"></div>
+
+          <div class="form-group">
+            <label class="form-label">Select Claim Officer *</label>
+            <select id="assign-officer-select" class="form-control" required>
+              <!-- Populated by JS -->
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Audit Instructions & Notes</label>
+            <textarea id="assign-instructions" class="form-control" placeholder="Specific items for the officer to audit (e.g. check surgery invoices and doctor notes)">Verify hospital billing invoices, check pathology report, and confirm treatment classification.</textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="AdminApp.closeModal('assign-officer-modal')">Cancel</button>
+          <button type="submit" class="btn btn-primary">Confirm Officer Assignment</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ==========================================
+       MODAL: Adjudicate Claim (Approve & Settle or Reject)
+       ========================================== -->
+  <div class="modal-overlay" id="adjudicate-modal">
+    <div class="modal-container large">
+      <div class="modal-header">
+        <div class="modal-title">⚖️ Final Claims Adjudication & Settlement</div>
+        <button class="modal-close" onclick="AdminApp.closeModal('adjudicate-modal')">&times;</button>
+      </div>
+      <div class="modal-body" id="adjudicate-content">
+        <!-- Rendered dynamically -->
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================
+       MODAL: Manage Insurance Policy (Create / Edit)
+       ========================================== -->
+  <div class="modal-overlay" id="manage-policy-modal">
+    <div class="modal-container large">
+      <div class="modal-header">
+        <div class="modal-title" id="policy-modal-title">🛡️ Insurance Policy Configuration</div>
+        <button class="modal-close" onclick="AdminApp.closeModal('manage-policy-modal')">&times;</button>
+      </div>
+      <form id="form-policy" onsubmit="AdminApp.handlePolicySubmit(event)">
+        <input type="hidden" id="policy-edit-id">
+        <div class="modal-body">
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <div class="form-group">
+              <label class="form-label">Policy Plan Name *</label>
+              <input type="text" id="policy-name" class="form-control" required placeholder="e.g. CareGold Comprehensive Plan">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Policy Code / Number *</label>
+              <input type="text" id="policy-num" class="form-control" required placeholder="e.g. HC-GOLD-948271">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Insurer Organization *</label>
+              <input type="text" id="policy-insurer" class="form-control" required placeholder="e.g. BlueCross Health Assurance">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Total Coverage Sum Insured ($) *</label>
+              <input type="number" id="policy-total-sum" class="form-control" required min="1000" step="100" value="50000">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Remaining Balance ($) *</label>
+              <input type="number" id="policy-rem-sum" class="form-control" required min="0" step="100" value="50000">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Annual Deductible ($)</label>
+              <input type="number" id="policy-deductible" class="form-control" min="0" step="10" value="500">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Copay Percentage (%)</label>
+              <input type="number" id="policy-copay" class="form-control" min="0" max="100" value="10">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Effective Start Date *</label>
+              <input type="date" id="policy-start" class="form-control" required value="2026-01-01">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Expiration Date *</label>
+              <input type="date" id="policy-end" class="form-control" required value="2026-12-31">
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Coverage Inclusions & Policy Description</label>
+            <textarea id="policy-desc" class="form-control" placeholder="Coverage description"></textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="AdminApp.closeModal('manage-policy-modal')">Cancel</button>
+          <button type="submit" class="btn btn-primary">Save Policy Changes</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Shared API and Admin Scripts -->
+  <script src="js/api.js"></script>
+  <script src="js/admin.js"></script>
+</body>
+</html>

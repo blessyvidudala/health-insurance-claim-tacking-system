@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CareClaim - Health Insurance Claim Tracking System</title>
+  <link rel="stylesheet" href="css/portal-theme.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%230284c7'><path d='M12 2L4 5v6.09c0 5.05 3.41 9.76 8 10.91 4.59-1.15 8-5.86 8-10.91V5l-8-3zm1 14h-2v-4H7v-2h4V6h2v4h4v2h-4v4z'/></svg>">
+  <style>
+    .hub-hero {
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+      color: white;
+      border-radius: var(--radius-lg);
+      padding: 3rem 2rem;
+      margin-bottom: 2.5rem;
+      text-align: center;
+      box-shadow: var(--shadow-lg);
+    }
+    .portal-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 2rem 1.75rem;
+      box-shadow: var(--shadow-sm);
+      transition: all 0.25s ease;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+      overflow: hidden;
+    }
+    .portal-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-xl);
+    }
+    .portal-card.patient { border-top: 5px solid var(--primary); }
+    .portal-card.officer { border-top: 5px solid var(--warning); }
+    .portal-card.admin { border-top: 5px solid #7c3aed; }
+  </style>
+</head>
+<body>
+
+  <!-- Top Navigation Header -->
+  <header class="app-header">
+    <div class="nav-container">
+      <div class="brand-wrapper">
+        <div class="brand-icon">🏥</div>
+        <div>
+          <div class="brand-title">CareClaim</div>
+          <span class="portal-badge" style="background: #e2e8f0; color: #334155;">System Hub</span>
+        </div>
+      </div>
+
+      <div class="nav-center-pills">
+        <a href="patient_portal.html" class="nav-pill">👤 Patient Portal</a>
+        <a href="officer_portal.html" class="nav-pill">🩺 Officer Portal</a>
+        <a href="admin_portal.html" class="nav-pill">🛡️ Admin Portal</a>
+        <a href="index.html" class="nav-pill active">🌐 Hub</a>
+      </div>
+
+      <div class="nav-actions">
+        <span class="status-badge approved" id="server-status-pill">● System Active</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    
+    <!-- Hero Header -->
+    <div class="hub-hero">
+      <div style="font-size: 3rem; margin-bottom: 0.5rem;">🏥</div>
+      <h1 style="font-size: 2.25rem; font-weight: 800; letter-spacing: -0.02em;">CareClaim Health Insurance Claim System</h1>
+      <p style="font-size: 1.1rem; opacity: 0.9; max-width: 780px; margin: 0.75rem auto 1.5rem;">
+        An enterprise end-to-end medical claim adjudication ecosystem featuring three dedicated, synchronized web portals for Patients, Claims Audit Officers, and Administrators.
+      </p>
+      <div style="display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap;">
+        <a href="patient_portal.html" class="btn btn-primary" style="padding: 0.75rem 1.5rem; font-size: 1rem;">Launch Patient Portal</a>
+        <a href="officer_portal.html" class="btn btn-warning" style="padding: 0.75rem 1.5rem; font-size: 1rem;">Launch Officer Portal</a>
+        <a href="admin_portal.html" class="btn btn-secondary" style="padding: 0.75rem 1.5rem; font-size: 1rem; background: #7c3aed; color: white;">Launch Admin Portal</a>
+      </div>
+    </div>
+
+    <!-- The 3 Portals Grid -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.75rem; margin-bottom: 3rem;">
+      
+      <!-- PORTAL 1: Patient / Policyholder Portal -->
+      <div class="portal-card patient">
+        <div>
+          <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem;">
+            <div style="width: 50px; height: 50px; border-radius: var(--radius-md); background: var(--primary-light); color: var(--primary); display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">
+              👤
+            </div>
+            <span class="portal-badge patient">Portal A</span>
+          </div>
+
+          <h2 style="font-size: 1.35rem; font-weight: 800; margin-bottom: 0.5rem;">Patient / Policyholder Portal</h2>
+          <p style="font-size: 0.875rem; color: var(--text-secondary); margin-bottom: 1.25rem;">
+            Designed for policyholders to enroll, manage insurance policies, file itemized hospital claims, and track live status.
+          </p>
+
+          <div style="font-size: 0.85rem; font-weight: 700; color: var(--primary); text-transform: uppercase; margin-bottom: 0.5rem;">Included Features:</div>
+          <ul style="font-size: 0.85rem; color: var(--text-secondary); line-height: 1.6; margin-left: 1.25rem; margin-bottom: 1.5rem;">
+            <li><strong>User Registration & Login:</strong> Account creation, email/password login, forgot password.</li>
+            <li><strong>Policy Management:</strong> Coverage details, policy validity, remaining balance bar.</li>
+            <li><strong>Submit New Claim:</strong> Patient details, hospital records, expenses breakdown, document upload.</li>
+            <li><strong>Track Claim Status:</strong> 6-stage tracker (Submitted, Under Review, Docs Required, Approved, Rejected, Payment Completed).</li>
+            <li><strong>Real-Time Notifications:</strong> Status updates, missing document alerts, payment confirmations.</li>
+          </ul>
+        </div>
+
+        <div>
+          <a href="patient_portal.html" class="btn btn-primary" style="width: 100%;">Open Patient Portal &rarr;</a>
+        </div>
+      </div>
+
+      <!-- PORTAL 2: Claim Officer Portal -->
+      <div class="portal-card officer">
+        <div>
+          <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem;">
+            <div style="width: 50px; height: 50px; border-radius: var(--radius-md); background: var(--warning-light); color: var(--warning); display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">
+              🩺
+            </div>
+            <span class="portal-badge officer">Portal C</span>
+          </div>
+
+          <h2 style="font-size: 1.35rem; font-weight: 800; margin-bottom: 0.5rem;">Claim Officer Portal</h2>
+          <p style="font-size: 0.875rem; color: var(--text-secondary); margin-bottom: 1.25rem;">
+            Clinical audit workstation for designated healthcare adjudicators to inspect hospital invoices and recommend outcomes.
+          </p>
+
+          <div style="font-size: 0.85rem; font-weight: 700; color: var(--warning); text-transform: uppercase; margin-bottom: 0.5rem;">Included Features:</div>
+          <ul style="font-size: 0.85rem; color: var(--text-secondary); line-height: 1.6; margin-left: 1.25rem; margin-bottom: 1.5rem;">
+            <li><strong>Assigned Claims Queue:</strong> Dedicated triage for claims assigned to this officer.</li>
+            <li><strong>Verify Uploaded Documents:</strong> Mark verified or flag discrepancies with auditor notes.</li>
+            <li><strong>Check Details & Expenses:</strong> Audit hospitalization stay and itemized expenses.</li>
+            <li><strong>Request Additional Documents:</strong> Triggers "Documents Required" status & patient alert.</li>
+            <li><strong>Recommend Approval / Rejection:</strong> Submit proposed settlement amounts & clinical notes.</li>
+            <li><strong>Patient Remarks:</strong> Direct notes visible on the patient's tracker.</li>
+          </ul>
+        </div>
+
+        <div>
+          <a href="officer_portal.html" class="btn btn-warning" style="width: 100%;">Open Officer Portal &rarr;</a>
+        </div>
+      </div>
+
+      <!-- PORTAL 3: Admin Portal -->
+      <div class="portal-card admin">
+        <div>
+          <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem;">
+            <div style="width: 50px; height: 50px; border-radius: var(--radius-md); background: #f3e8ff; color: #7c3aed; display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">
+              🛡️
+            </div>
+            <span class="portal-badge admin">Portal B</span>
+          </div>
+
+          <h2 style="font-size: 1.35rem; font-weight: 800; margin-bottom: 0.5rem;">Admin Management Portal</h2>
+          <p style="font-size: 0.875rem; color: var(--text-secondary); margin-bottom: 1.25rem;">
+            Master administrative console for policy configuration, officer assignment, final claim payouts, and reporting.
+          </p>
+
+          <div style="font-size: 0.85rem; font-weight: 700; color: #7c3aed; text-transform: uppercase; margin-bottom: 0.5rem;">Included Features:</div>
+          <ul style="font-size: 0.85rem; color: var(--text-secondary); line-height: 1.6; margin-left: 1.25rem; margin-bottom: 1.5rem;">
+            <li><strong>Admin Authentication:</strong> Secure administrative login and role controls.</li>
+            <li><strong>Registry of Users:</strong> View all registered policyholders, officers, and credentials.</li>
+            <li><strong>Master Claims List:</strong> Complete visibility into all submitted claims.</li>
+            <li><strong>Assign to Officers:</strong> Direct workflow routing to specific claim adjudicators.</li>
+            <li><strong>Approve, Reject & Settle:</strong> Calculate deductibles, disburse funds, deduct policy balance.</li>
+            <li><strong>Manage Policies:</strong> Create and edit insurance products and benefits.</li>
+            <li><strong>Audit Reports & CSV:</strong> Executive analytics, KPI dashboards, and CSV export.</li>
+          </ul>
+        </div>
+
+        <div>
+          <a href="admin_portal.html" class="btn btn-secondary" style="width: 100%; background: #7c3aed; color: white;">Open Admin Portal &rarr;</a>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Demo Credentials & Workflow Guide -->
+    <div class="card">
+      <div class="card-header">
+        <h3 class="card-title">🔑 Demo Account Credentials & End-to-End Workflow Guide</h3>
+      </div>
+      
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+        <div>
+          <h4 style="font-size: 0.95rem; font-weight: 700; margin-bottom: 0.75rem;">Pre-configured Demo Accounts</h4>
+          <div class="table-responsive">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Role</th>
+                  <th>Name</th>
+                  <th>Email</th>
+                  <th>Password</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><span class="portal-badge patient">Patient</span></td>
+                  <td>John Doe</td>
+                  <td><code>john.doe@example.com</code></td>
+                  <td><code>user123</code></td>
+                </tr>
+                <tr>
+                  <td><span class="portal-badge patient">Patient</span></td>
+                  <td>Sarah Smith</td>
+                  <td><code>sarah.smith@example.com</code></td>
+                  <td><code>user123</code></td>
+                </tr>
+                <tr>
+                  <td><span class="portal-badge officer">Officer</span></td>
+                  <td>Dr. Michael Chang</td>
+                  <td><code>officer.michael@healthclaim.com</code></td>
+                  <td><code>officer123</code></td>
+                </tr>
+                <tr>
+                  <td><span class="portal-badge officer">Officer</span></td>
+                  <td>Sarah Jenkins, RN</td>
+                  <td><code>officer.sarah@healthclaim.com</code></td>
+                  <td><code>officer123</code></td>
+                </tr>
+                <tr>
+                  <td><span class="portal-badge admin">Admin</span></td>
+                  <td>Chief Administrator</td>
+                  <td><code>admin@healthclaim.com</code></td>
+                  <td><code>admin123</code></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div>
+          <h4 style="font-size: 0.95rem; font-weight: 700; margin-bottom: 0.75rem;">Interactive Lifecycle Verification</h4>
+          <ol style="font-size: 0.85rem; color: var(--text-secondary); line-height: 1.7; margin-left: 1.25rem;">
+            <li><strong>Submit Claim:</strong> Open <em>Patient Portal</em> and file a new claim with itemized expenses & invoices.</li>
+            <li><strong>Assign Officer:</strong> Open <em>Admin Portal</em> &rarr; <em>Claims Queue</em> &rarr; Assign claim to Dr. Michael Chang.</li>
+            <li><strong>Audit & Request Documents:</strong> Open <em>Officer Portal</em> &rarr; Inspect uploaded bills &rarr; Request missing pharmacy invoice.</li>
+            <li><strong>Patient Notification:</strong> Switch back to <em>Patient Portal</em> &rarr; Observe the <code>Documents Required</code> warning banner &rarr; Upload missing files.</li>
+            <li><strong>Recommend & Final Payout:</strong> In <em>Officer Portal</em> recommend approval &rarr; In <em>Admin Portal</em> click <em>Adjudicate</em> &rarr; Click <em>Authorize Payout & Mark Payment Completed</em>.</li>
+            <li><strong>Settlement Complete:</strong> Observe the patient's policy remaining balance instantly deduct and payment confirmation receipt generated!</li>
+          </ol>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Shared API Scripts -->
+  <script src="js/api.js"></script>
+</body>
+</html>

@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CareClaim - Patient & Policyholder Portal</title>
+  <link rel="stylesheet" href="css/portal-theme.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%230284c7'><path d='M12 2L4 5v6.09c0 5.05 3.41 9.76 8 10.91 4.59-1.15 8-5.86 8-10.91V5l-8-3zm1 14h-2v-4H7v-2h4V6h2v4h4v2h-4v4z'/></svg>">
+</head>
+<body>
+
+  <!-- Top Navigation Header -->
+  <header class="app-header">
+    <div class="nav-container">
+      <div class="brand-wrapper">
+        <div class="brand-icon">🏥</div>
+        <div>
+          <div class="brand-title">CareClaim</div>
+          <span class="portal-badge patient">Patient / Policyholder Portal</span>
+        </div>
+      </div>
+
+      <!-- Quick Switcher to Other Portals -->
+      <div class="nav-center-pills">
+        <a href="patient_portal.html" class="nav-pill active">👤 Patient Portal</a>
+        <a href="officer_portal.html" class="nav-pill">🩺 Officer Portal</a>
+        <a href="admin_portal.html" class="nav-pill">🛡️ Admin Portal</a>
+        <a href="index.html" class="nav-pill">🌐 Hub</a>
+      </div>
+
+      <!-- User & Notifications -->
+      <div class="nav-actions">
+        <!-- Notification Bell -->
+        <button class="btn-notif-bell" onclick="PatientApp.toggleNotifDropdown()" title="Notifications">
+          <span>🔔</span>
+          <span class="notif-count-badge" id="notif-badge-count" style="display: none;">0</span>
+        </button>
+
+        <div id="nav-user-panel">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Notification Dropdown -->
+  <div class="notif-dropdown hidden" id="notification-dropdown">
+    <div class="notif-header">
+      <div style="font-weight: 700; font-size: 0.9rem;">🔔 Patient Notifications</div>
+      <button class="btn btn-sm btn-secondary" onclick="PatientApp.markAllNotifsRead()" style="padding: 2px 8px; font-size: 0.75rem;">Mark Read</button>
+    </div>
+    <div class="notif-list" id="notif-list-container">
+      <!-- Dynamic Notifications -->
+    </div>
+  </div>
+
+  <!-- Main Portal Body -->
+  <main class="main-content">
+
+    <!-- Urgent Alert Banner if documents are requested -->
+    <div id="urgent-alert-container"></div>
+
+    <!-- ==========================================
+         AUTH SECTION (When logged out)
+         ========================================== -->
+    <section id="auth-section" style="max-width: 480px; margin: 3rem auto; display: none;">
+      <div class="card" style="box-shadow: var(--shadow-lg);">
+        <div class="card-header" style="text-align: center; display: block; border-bottom: none; padding-bottom: 0;">
+          <div style="font-size: 2.2rem; margin-bottom: 0.5rem;">🏥</div>
+          <h2 style="font-size: 1.5rem; font-weight: 800;">Policyholder Sign In</h2>
+          <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.25rem;">Access your health insurance coverage, claims tracking & benefits</p>
+          
+          <!-- Switch Tabs -->
+          <div style="display: flex; gap: 0.5rem; margin-top: 1.25rem; background: var(--bg-subtle); padding: 4px; border-radius: var(--radius-md);">
+            <button class="btn btn-sm btn-secondary" style="flex: 1;" onclick="PatientApp.switchAuthTab('login')">Sign In</button>
+            <button class="btn btn-sm btn-secondary" style="flex: 1;" onclick="PatientApp.switchAuthTab('register')">Register</button>
+            <button class="btn btn-sm btn-secondary" style="flex: 1;" onclick="PatientApp.switchAuthTab('forgot')">Forgot Pass</button>
+          </div>
+        </div>
+
+        <div class="card-body" style="padding: 1.5rem 0 0.5rem;">
+          <!-- Demo Fast Login Bar -->
+          <div style="background: #f0fdf4; border: 1px dashed #86efac; border-radius: var(--radius-md); padding: 0.75rem; margin-bottom: 1.25rem;">
+            <div style="font-size: 0.75rem; font-weight: 700; color: #166534; text-transform: uppercase; margin-bottom: 0.35rem;">⚡ 1-Click Patient Demo Logins</div>
+            <div style="display: flex; gap: 0.5rem;">
+              <button type="button" class="btn btn-sm btn-secondary" style="flex: 1; font-size: 0.75rem;" onclick="PatientApp.quickLogin('john.doe@example.com', 'user123')">
+                👤 John Doe
+              </button>
+              <button type="button" class="btn btn-sm btn-secondary" style="flex: 1; font-size: 0.75rem;" onclick="PatientApp.quickLogin('sarah.smith@example.com', 'user123')">
+                👤 Sarah Smith
+              </button>
+              <button type="button" class="btn btn-sm btn-secondary" style="flex: 1; font-size: 0.75rem;" onclick="PatientApp.quickLogin('robert.chen@example.com', 'user123')">
+                👤 Robert Chen
+              </button>
+            </div>
+          </div>
+
+          <!-- TAB 1: Login Form -->
+          <div id="login-tab-content">
+            <form id="form-login" onsubmit="PatientApp.handleLogin(event)">
+              <div class="form-group">
+                <label class="form-label" for="login-email">Email Address or Username *</label>
+                <input type="text" id="login-email" class="form-control" required placeholder="e.g. john.doe@example.com" value="john.doe@example.com">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="login-pass">Password *</label>
+                <input type="password" id="login-pass" class="form-control" required placeholder="••••••••" value="user123">
+              </div>
+              <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 0.5rem;">Sign In to Patient Portal</button>
+            </form>
+          </div>
+
+          <!-- TAB 2: Register Form -->
+          <div id="register-tab-content" style="display: none;">
+            <form onsubmit="PatientApp.handleRegister(event)">
+              <div class="form-group">
+                <label class="form-label">Full Legal Name *</label>
+                <input type="text" id="reg-name" class="form-control" required placeholder="e.g. Emily Davis">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Email Address *</label>
+                <input type="email" id="reg-email" class="form-control" required placeholder="e.g. emily.davis@example.com">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Password *</label>
+                <input type="password" id="reg-pass" class="form-control" required placeholder="Minimum 6 characters">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Phone Number *</label>
+                <input type="tel" id="reg-phone" class="form-control" required placeholder="+1-555-0199">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Date of Birth *</label>
+                <input type="date" id="reg-dob" class="form-control" required value="1992-05-20">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Residential Address</label>
+                <input type="text" id="reg-address" class="form-control" placeholder="123 Health Ave, Chicago, IL">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Select Insurance Plan</label>
+                <select id="reg-policy-select" class="form-control">
+                  <option value="POL-1001">CareGold Comprehensive ($50,000 Coverage)</option>
+                  <option value="POL-1002">Platinum Elite Executive ($100,000 Coverage)</option>
+                  <option value="POL-1003">Silver Standard Shield ($25,000 Coverage)</option>
+                </select>
+              </div>
+              <button type="submit" class="btn btn-success" style="width: 100%;">Create Account & Enroll</button>
+            </form>
+          </div>
+
+          <!-- TAB 3: Forgot Password -->
+          <div id="forgot-tab-content" style="display: none;">
+            <form onsubmit="PatientApp.handleForgotPassword(event)">
+              <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 1rem;">
+                Enter your registered policyholder email and choose a new password.
+              </p>
+              <div class="form-group">
+                <label class="form-label">Registered Email *</label>
+                <input type="email" id="forgot-email" class="form-control" required placeholder="e.g. john.doe@example.com">
+              </div>
+              <div class="form-group">
+                <label class="form-label">New Password *</label>
+                <input type="password" id="forgot-new-pass" class="form-control" required placeholder="Enter new password">
+              </div>
+              <button type="submit" class="btn btn-primary" style="width: 100%;">Reset Password</button>
+            </form>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         DASHBOARD SECTION (When logged in)
+         ========================================== -->
+    <section id="dashboard-section" style="display: none;">
+      
+      <!-- Welcome Banner -->
+      <div class="portal-banner">
+        <div>
+          <h1 class="banner-title">Welcome to Your Health Insurance Portal</h1>
+          <p class="banner-desc">Review your active policy, submit medical reimbursement claims, and track live adjudication status.</p>
+        </div>
+        <div>
+          <button class="btn btn-secondary" style="background: white; color: var(--primary); font-weight: 700; box-shadow: var(--shadow-sm);" onclick="PatientApp.openSubmitClaimModal()">
+            ➕ Submit New Claim
+          </button>
+        </div>
+      </div>
+
+      <!-- Feature 2: Policy Management Summary -->
+      <div id="policy-summary-container">
+        <!-- Rendered dynamically by patient.js -->
+      </div>
+
+      <!-- Feature 4: Track Claim Status Section -->
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <h2 class="card-title">📋 Your Insurance Claims & Status Tracker</h2>
+            <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.2rem;">Real-time progress across Submitted, Under Review, Documents Required, Approved, Rejected, and Payment Completed stages</p>
+          </div>
+          <!-- Filter Buttons -->
+          <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+            <button class="btn btn-sm btn-secondary" onclick="PatientApp.renderClaimsTable('ALL')">All Claims</button>
+            <button class="btn btn-sm btn-secondary" onclick="PatientApp.renderClaimsTable('Under Review')">Under Review</button>
+            <button class="btn btn-sm btn-secondary" onclick="PatientApp.renderClaimsTable('Documents Required')">⚠️ Docs Required</button>
+            <button class="btn btn-sm btn-secondary" onclick="PatientApp.renderClaimsTable('Payment Completed')">✓ Settled</button>
+            <button class="btn btn-sm btn-primary" onclick="PatientApp.openSubmitClaimModal()">+ File New Claim</button>
+          </div>
+        </div>
+
+        <div class="table-responsive">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Claim ID / Date</th>
+                <th>Patient Details</th>
+                <th>Hospital / Diagnosis</th>
+                <th>Claimed ($)</th>
+                <th>Current Status</th>
+                <th>Latest Remarks</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="claims-table-body">
+              <!-- Rendered dynamically -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- ==========================================
+       MODAL 1: Submit New Claim (Multi-step Form)
+       ========================================== -->
+  <div class="modal-overlay" id="submit-claim-modal">
+    <div class="modal-container large">
+      <div class="modal-header">
+        <div class="modal-title">🏥 Submit New Health Insurance Claim</div>
+        <button class="modal-close" onclick="PatientApp.closeModal('submit-claim-modal')">&times;</button>
+      </div>
+
+      <form id="form-submit-claim" onsubmit="PatientApp.handleClaimSubmit(event)">
+        <div class="modal-body">
+          <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1.25rem;">
+            Please provide accurate hospitalization details, treatment expenses, and attach itemized invoices and reports.
+          </p>
+
+          <!-- Section A: Patient Details -->
+          <div style="background: var(--bg-subtle); padding: 1rem; border-radius: var(--radius-md); margin-bottom: 1.25rem;">
+            <h4 style="font-size: 0.95rem; font-weight: 700; color: var(--primary); margin-bottom: 0.75rem;">1. Patient Details</h4>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+              <div class="form-group" style="margin-bottom: 0;">
+                <label class="form-label">Patient Full Name *</label>
+                <input type="text" id="claim-patient-name" class="form-control" required placeholder="e.g. John Doe">
+              </div>
+              <div class="form-group" style="margin-bottom: 0;">
+                <label class="form-label">Patient Age *</label>
+                <input type="number" id="claim-patient-age" class="form-control" required min="1" max="115" value="35">
+              </div>
+              <div class="form-group" style="margin-bottom: 0;">
+                <label class="form-label">Gender *</label>
+                <select id="claim-patient-gender" class="form-control">
+                  <option value="Male">Male</option>
+                  <option value="Female">Female</option>
+                  <option value="Other">Other</option>
+                </select>
+              </div>
+              <div class="form-group" style="margin-bottom: 0;">
+                <label class="form-label">Relationship to Policyholder *</label>
+                <select id="claim-patient-relation" class="form-control">
+                  <option value="Self">Self</option>
+                  <option value="Spouse">Spouse</option>
+                  <option value="Child">Child</option>
+                  <option value="Parent">Parent</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- Section B: Hospital Details -->
+          <div style="background: var(--bg-subtle); padding: 1rem; border-radius: var(--radius-md); margin-bottom: 1.25rem;">
+            <h4 style="font-size: 0.95rem; font-weight: 700; color: var(--primary); margin-bottom: 0.75rem;">2. Hospital Details</h4>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+              <div class="form-group" style="margin-bottom: 0;">
+                <label class="form-label">Hospital Name *</label>
+                <input type="text" id="claim-hosp-name" class="form-control" required placeholder="e.g. St. Jude Memorial Hospital">
+              </div>
+              <div class="form-group" style="margin-bottom: 0;">
+                <label class="form-label">Hospital City / State *</label>
+                <input type="text" id="claim-hosp-city" class="form-control" required placeholder="e.g. Chicago, IL">
+              </div>
+              <div class="form-group" style="margin-bottom: 0;">
+                <label class="form-label">Room Category *</label>
+                <select id="claim-room-type" class="form-control">
+                  <option value="Single Private Room">Single Private Room</option>
+                  <option value="Semi-Private Twin Sharing">Semi-Private Twin Sharing</option>
+                  <option value="ICU / Critical Care">ICU / Critical Care Unit</option>
+                  <option value="Day Care Ward">Day Care Ward</option>
+                </select>
+              </div>
+              <div class="form-group" style="margin-bottom: 0;">
+                <label class="form-label">Admission Date *</label>
+                <input type="date" id="claim-admission-date" class="form-control" required value="2026-11-15">
+              </div>
+              <div class="form-group" style="margin-bottom: 0;">
+                <label class="form-label">Discharge Date *</label>
+                <input type="date" id="claim-discharge-date" class="form-control" required value="2026-11-18">
+              </div>
+              <div class="form-group" style="margin-bottom: 0;">
+                <label class="form-label">Medical Specialty / Ailment Category *</label>
+                <select id="claim-ailment-cat" class="form-control">
+                  <option value="General Surgery">General Surgery</option>
+                  <option value="Cardiology">Cardiology</option>
+                  <option value="Orthopedics">Orthopedics</option>
+                  <option value="Pediatrics">Pediatrics</option>
+                  <option value="Neurology">Neurology</option>
+                  <option value="Oncology">Oncology</option>
+                  <option value="Emergency Care">Emergency Care</option>
+                </select>
+              </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 1rem; margin-top: 1rem;">
+              <div class="form-group" style="margin-bottom: 0;">
+                <label class="form-label">Diagnosis & Treatment Description *</label>
+                <input type="text" id="claim-diagnosis" class="form-control" required placeholder="e.g. Acute appendicitis with laparoscopic appendectomy">
+              </div>
+              <div class="form-group" style="margin-bottom: 0;">
+                <label class="form-label">Treatment Type</label>
+                <select id="claim-treatment-type" class="form-control">
+                  <option value="Inpatient">Inpatient (Hospitalized 24h+)</option>
+                  <option value="Day Care">Day Care Procedure</option>
+                  <option value="Emergency">Emergency Trauma</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- Section C: Treatment Expenses -->
+          <div style="background: var(--bg-subtle); padding: 1rem; border-radius: var(--radius-md); margin-bottom: 1.25rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+              <h4 style="font-size: 0.95rem; font-weight: 700; color: var(--primary);">3. Treatment Expenses Breakdown ($)</h4>
+              <div style="font-size: 1rem; font-weight: 800; color: var(--primary);">
+                Total: <span id="exp-total-display">$0.00</span>
+              </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 1rem;">
+              <div class="form-group" style="margin-bottom: 0;">
+                <label class="form-label">Room Rent & Nursing ($)</label>
+                <input type="number" id="exp-room" class="form-control" min="0" step="0.01" value="1200" oninput="PatientApp.updateClaimTotalCalculation()">
+              </div>
+              <div class="form-group" style="margin-bottom: 0;">
+                <label class="form-label">Doctor / Surgeon Fees ($)</label>
+                <input type="number" id="exp-doc" class="form-control" min="0" step="0.01" value="2000" oninput="PatientApp.updateClaimTotalCalculation()">
+              </div>
+              <div class="form-group" style="margin-bottom: 0;">
+                <label class="form-label">Medicines & Pharmacy ($)</label>
+                <input type="number" id="exp-med" class="form-control" min="0" step="0.01" value="650" oninput="PatientApp.updateClaimTotalCalculation()">
+              </div>
+              <div class="form-group" style="margin-bottom: 0;">
+                <label class="form-label">Lab & Diagnostics ($)</label>
+                <input type="number" id="exp-lab" class="form-control" min="0" step="0.01" value="750" oninput="PatientApp.updateClaimTotalCalculation()">
+              </div>
+              <div class="form-group" style="margin-bottom: 0;">
+                <label class="form-label">Other Medical Charges ($)</label>
+                <input type="number" id="exp-oth" class="form-control" min="0" step="0.01" value="200" oninput="PatientApp.updateClaimTotalCalculation()">
+              </div>
+            </div>
+          </div>
+
+          <!-- Section D: Upload Medical Bills and Reports -->
+          <div style="background: var(--bg-subtle); padding: 1rem; border-radius: var(--radius-md);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+              <h4 style="font-size: 0.95rem; font-weight: 700; color: var(--primary);">4. Upload Medical Bills & Diagnostic Reports</h4>
+              <div style="display: flex; gap: 0.35rem;">
+                <button type="button" class="btn btn-sm btn-secondary" onclick="PatientApp.addMockFile('Hospital Bill')">+ Add Sample Bill</button>
+                <button type="button" class="btn btn-sm btn-secondary" onclick="PatientApp.addMockFile('Medical Report')">+ Add Sample Lab</button>
+                <button type="button" class="btn btn-sm btn-secondary" onclick="PatientApp.addMockFile('Discharge Summary')">+ Add Discharge Summary</button>
+              </div>
+            </div>
+
+            <div style="display: flex; gap: 1rem; align-items: center; margin-bottom: 1rem;">
+              <select id="claim-doc-type" class="form-control" style="max-width: 200px;">
+                <option value="Hospital Bill">Hospital Bill / Invoice</option>
+                <option value="Medical Report">Medical / Lab Report</option>
+                <option value="Discharge Summary">Discharge Summary</option>
+                <option value="Doctor Prescription">Doctor Prescription</option>
+              </select>
+              <input type="file" id="claim-file-input" multiple class="form-control" onchange="PatientApp.handleFileSelect(event)">
+            </div>
+
+            <!-- Staged Files Preview List -->
+            <div id="staged-files-list">
+              <!-- Rendered dynamically -->
+            </div>
+          </div>
+
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="PatientApp.closeModal('submit-claim-modal')">Cancel</button>
+          <button type="submit" class="btn btn-primary" style="font-size: 1rem; padding: 0.65rem 1.75rem;">🚀 Submit Claim for Review</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ==========================================
+       MODAL 2: View Claim Details & Stepper
+       ========================================== -->
+  <div class="modal-overlay" id="claim-details-modal">
+    <div class="modal-container large">
+      <div class="modal-header">
+        <div class="modal-title">🔍 Comprehensive Claim Status Tracker</div>
+        <button class="modal-close" onclick="PatientApp.closeModal('claim-details-modal')">&times;</button>
+      </div>
+      <div class="modal-body" id="claim-details-content">
+        <!-- Rendered dynamically -->
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="window.print()">🖨️ Print Claim Voucher</button>
+        <button class="btn btn-primary" onclick="PatientApp.closeModal('claim-details-modal')">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================
+       MODAL 3: Upload Missing Documents Prompt
+       ========================================== -->
+  <div class="modal-overlay" id="upload-missing-modal">
+    <div class="modal-container">
+      <div class="modal-header" style="background: #fef2f2; border-bottom: 1px solid #fecaca;">
+        <div class="modal-title" style="color: #991b1b;">⚠️ Upload Requested Missing Documents</div>
+        <button class="modal-close" onclick="PatientApp.closeModal('upload-missing-modal')">&times;</button>
+      </div>
+      <form onsubmit="PatientApp.handleMissingDocsSubmit(event)">
+        <input type="hidden" id="missing-docs-claim-id">
+        <div class="modal-body">
+          <div style="background: #fef2f2; border-left: 3px solid var(--danger); padding: 0.85rem; border-radius: var(--radius-sm); margin-bottom: 1.25rem;">
+            <div style="font-weight: 700; color: #991b1b; font-size: 0.85rem;">Officer's Request:</div>
+            <div id="missing-docs-prompt" style="font-size: 0.9rem; color: #7f1d1d; margin-top: 0.25rem;"></div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Document Description / File Title *</label>
+            <input type="text" id="missing-doc-title" class="form-control" required placeholder="e.g. Itemized_Pharmacy_Tax_Invoice_Nov.pdf" value="Itemized_Pharmacy_Tax_Invoice_Nov.pdf">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Document Category *</label>
+            <select id="missing-doc-category" class="form-control">
+              <option value="Hospital Bill">Itemized Hospital / Pharmacy Bill</option>
+              <option value="Medical Report">Physician Clinical Report / Notes</option>
+              <option value="Discharge Summary">Signed Discharge Summary</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Select File to Upload</label>
+            <input type="file" class="form-control">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="PatientApp.closeModal('upload-missing-modal')">Cancel</button>
+          <button type="submit" class="btn btn-danger">Upload & Resume Review</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Shared API and Portal Scripts -->
+  <script src="js/api.js"></script>
+  <script src="js/patient.js"></script>
+</body>
+</html>

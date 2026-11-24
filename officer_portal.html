@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CareClaim - Claim Officer Adjudication Portal</title>
+  <link rel="stylesheet" href="css/portal-theme.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23d97706'><path d='M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10h-4v4h-2v-4H7v-2h4V7h2v4h4v2z'/></svg>">
+</head>
+<body>
+
+  <!-- Top Navigation Header -->
+  <header class="app-header">
+    <div class="nav-container">
+      <div class="brand-wrapper">
+        <div class="brand-icon" style="background: linear-gradient(135deg, #d97706, #b45309);">🩺</div>
+        <div>
+          <div class="brand-title">CareClaim</div>
+          <span class="portal-badge officer">Claim Officer Portal</span>
+        </div>
+      </div>
+
+      <!-- Quick Switcher to Other Portals -->
+      <div class="nav-center-pills">
+        <a href="patient_portal.html" class="nav-pill">👤 Patient Portal</a>
+        <a href="officer_portal.html" class="nav-pill active">🩺 Officer Portal</a>
+        <a href="admin_portal.html" class="nav-pill">🛡️ Admin Portal</a>
+        <a href="index.html" class="nav-pill">🌐 Hub</a>
+      </div>
+
+      <!-- User Panel -->
+      <div class="nav-actions">
+        <div id="officer-nav-user">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Portal Body -->
+  <main class="main-content">
+
+    <!-- ==========================================
+         AUTH SECTION (When logged out)
+         ========================================== -->
+    <section id="officer-auth-section" style="max-width: 460px; margin: 3rem auto; display: none;">
+      <div class="card" style="box-shadow: var(--shadow-lg); border-top: 4px solid var(--warning);">
+        <div class="card-header" style="text-align: center; display: block; border-bottom: none;">
+          <div style="font-size: 2.2rem; margin-bottom: 0.5rem;">🩺</div>
+          <h2 style="font-size: 1.5rem; font-weight: 800;">Claim Officer Login</h2>
+          <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.25rem;">Clinical review, medical bill verification & claim adjudication</p>
+        </div>
+
+        <div class="card-body">
+          <!-- 1-Click Fast Logins -->
+          <div style="background: #fffbeb; border: 1px dashed #fde68a; border-radius: var(--radius-md); padding: 0.75rem; margin-bottom: 1.25rem;">
+            <div style="font-size: 0.75rem; font-weight: 700; color: #92400e; text-transform: uppercase; margin-bottom: 0.35rem;">⚡ 1-Click Officer Logins</div>
+            <div style="display: flex; gap: 0.5rem;">
+              <button type="button" class="btn btn-sm btn-secondary" style="flex: 1; font-size: 0.75rem;" onclick="OfficerApp.quickLogin('officer.michael@healthclaim.com', 'officer123')">
+                🩺 Dr. Michael Chang
+              </button>
+              <button type="button" class="btn btn-sm btn-secondary" style="flex: 1; font-size: 0.75rem;" onclick="OfficerApp.quickLogin('officer.sarah@healthclaim.com', 'officer123')">
+                🩺 Sarah Jenkins, RN
+              </button>
+            </div>
+          </div>
+
+          <form id="form-officer-login" onsubmit="OfficerApp.handleLogin(event)">
+            <div class="form-group">
+              <label class="form-label">Officer Email *</label>
+              <input type="email" id="officer-email" class="form-control" required placeholder="officer.michael@healthclaim.com" value="officer.michael@healthclaim.com">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Password *</label>
+              <input type="password" id="officer-pass" class="form-control" required placeholder="••••••••" value="officer123">
+            </div>
+            <button type="submit" class="btn btn-warning" style="width: 100%; margin-top: 0.5rem;">Sign In to Adjudication Console</button>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         DASHBOARD SECTION (When logged in)
+         ========================================== -->
+    <section id="officer-dashboard-section" style="display: none;">
+      
+      <!-- Welcome Banner -->
+      <div class="portal-banner officer">
+        <div>
+          <h1 class="banner-title">Clinical Claims Adjudication Workstation</h1>
+          <p class="banner-desc">Audit medical documentation, verify treatment expenses, request patient records, and recommend approvals.</p>
+        </div>
+      </div>
+
+      <!-- KPI Metrics Grid -->
+      <div class="kpi-grid">
+        <div class="kpi-card">
+          <div>
+            <div class="kpi-title">Assigned Claims</div>
+            <div class="kpi-value" id="kpi-officer-total">0</div>
+            <div class="kpi-sub">Total in officer queue</div>
+          </div>
+          <div class="kpi-icon" style="background: var(--primary-light); color: var(--primary);">📂</div>
+        </div>
+
+        <div class="kpi-card">
+          <div>
+            <div class="kpi-title">Under Clinical Review</div>
+            <div class="kpi-value" id="kpi-officer-review" style="color: var(--warning);">0</div>
+            <div class="kpi-sub">Active medical auditing</div>
+          </div>
+          <div class="kpi-icon" style="background: var(--warning-light); color: var(--warning);">🩺</div>
+        </div>
+
+        <div class="kpi-card">
+          <div>
+            <div class="kpi-title">Documents Required</div>
+            <div class="kpi-value" id="kpi-officer-docs" style="color: var(--danger);">0</div>
+            <div class="kpi-sub">Awaiting patient uploads</div>
+          </div>
+          <div class="kpi-icon" style="background: var(--danger-light); color: var(--danger);">⚠️</div>
+        </div>
+
+        <div class="kpi-card">
+          <div>
+            <div class="kpi-title">Recommendations Completed</div>
+            <div class="kpi-value" id="kpi-officer-rec" style="color: var(--success);">0</div>
+            <div class="kpi-sub">Forwarded for Admin sign-off</div>
+          </div>
+          <div class="kpi-icon" style="background: var(--success-light); color: var(--success);">✓</div>
+        </div>
+      </div>
+
+      <!-- Assigned Claims Table -->
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <h2 class="card-title">🩺 Assigned Claims Queue</h2>
+            <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.2rem;">Review clinical history, verify hospital invoices, flag discrepancies, and submit adjudication recommendations</p>
+          </div>
+          <!-- Filter Buttons -->
+          <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+            <button class="btn btn-sm btn-secondary" onclick="OfficerApp.renderClaimsList('ALL')">All Assigned</button>
+            <button class="btn btn-sm btn-secondary" onclick="OfficerApp.renderClaimsList('Under Review')">Under Review</button>
+            <button class="btn btn-sm btn-secondary" onclick="OfficerApp.renderClaimsList('Documents Required')">Docs Requested</button>
+            <button class="btn btn-sm btn-secondary" onclick="OfficerApp.renderClaimsList('Payment Completed')">Settled</button>
+          </div>
+        </div>
+
+        <div class="table-responsive">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Claim ID / Assigned</th>
+                <th>Patient / Policy</th>
+                <th>Hospital / Diagnosis</th>
+                <th>Claimed ($)</th>
+                <th>Status</th>
+                <th>Officer Recommendation</th>
+                <th>Audit Action</th>
+              </tr>
+            </thead>
+            <tbody id="officer-claims-tbody">
+              <!-- Rendered dynamically -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- ==========================================
+       MODAL: Clinical Audit & Adjudication Console
+       ========================================== -->
+  <div class="modal-overlay" id="audit-claim-modal">
+    <div class="modal-container large">
+      <div class="modal-header">
+        <div class="modal-title">🩺 Clinical Claim Adjudication Console</div>
+        <button class="modal-close" onclick="OfficerApp.closeModal('audit-claim-modal')">&times;</button>
+      </div>
+      <div class="modal-body" id="audit-claim-content">
+        <!-- Rendered dynamically -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Shared API and Officer Scripts -->
+  <script src="js/api.js"></script>
+  <script src="js/officer.js"></script>
+</body>
+</html>
