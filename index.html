@@ -1,10 +1,901 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>CareClaim - Health Insurance Claim Tracking System</title>
-  <link rel="stylesheet" href="css/portal-theme.css">
+  <style>
+/* ==========================================================================
+   CareClaim Enterprise UI Theme - Health Insurance System
+   ========================================================================== */
+
+:root {
+  --primary: #0284c7;
+  --primary-hover: #0369a1;
+  --primary-light: #e0f2fe;
+  --primary-dark: #075985;
+  
+  --secondary: #0f766e;
+  --secondary-hover: #115e59;
+  --secondary-light: #ccfbf1;
+
+  --success: #16a34a;
+  --success-light: #dcfce7;
+  --warning: #d97706;
+  --warning-light: #fef3c7;
+  --danger: #dc2626;
+  --danger-light: #fee2e2;
+  --info: #4f46e5;
+  --info-light: #e0e7ff;
+  
+  --bg-page: #f8fafc;
+  --bg-surface: #ffffff;
+  --bg-subtle: #f1f5f9;
+  --border: #e2e8f0;
+  --border-strong: #cbd5e1;
+  
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+  --text-muted: #64748b;
+  --text-white: #ffffff;
+  
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --radius-full: 9999px;
+  
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.08), 0 2px 4px -2px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.08);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.12), 0 8px 10px -6px rgba(0, 0, 0, 0.08);
+
+  --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-family);
+  background-color: var(--bg-page);
+  color: var(--text-primary);
+  line-height: 1.5;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ==========================================================================
+   Header & Navigation
+   ========================================================================== */
+.app-header {
+  background: var(--bg-surface);
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  box-shadow: var(--shadow-sm);
+}
+
+.nav-container {
+  max-width: 1300px;
+  margin: 0 auto;
+  padding: 0.75rem 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.brand-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  text-decoration: none;
+  color: inherit;
+}
+
+.brand-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-md);
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  box-shadow: 0 2px 4px rgba(2, 132, 199, 0.3);
+}
+
+.brand-title {
+  font-size: 1.25rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--text-primary);
+  line-height: 1.2;
+}
+
+.portal-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  border-radius: var(--radius-full);
+}
+
+.portal-badge.patient { background: var(--primary-light); color: var(--primary-dark); }
+.portal-badge.officer { background: var(--warning-light); color: #92400e; }
+.portal-badge.admin { background: #f3e8ff; color: #6b21a8; }
+
+.nav-center-pills {
+  display: flex;
+  background: var(--bg-subtle);
+  border-radius: var(--radius-full);
+  padding: 4px;
+  gap: 4px;
+}
+
+.nav-pill {
+  padding: 6px 14px;
+  border-radius: var(--radius-full);
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-decoration: none;
+  color: var(--text-secondary);
+  transition: all 0.2s;
+  cursor: pointer;
+  border: none;
+  background: transparent;
+}
+
+.nav-pill:hover {
+  color: var(--text-primary);
+}
+
+.nav-pill.active {
+  background: var(--bg-surface);
+  color: var(--primary);
+  box-shadow: var(--shadow-sm);
+}
+
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.btn-notif-bell {
+  position: relative;
+  background: var(--bg-subtle);
+  border: 1px solid var(--border);
+  width: 38px;
+  height: 38px;
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-notif-bell:hover {
+  background: var(--primary-light);
+  border-color: var(--primary);
+}
+
+.notif-count-badge {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  background: var(--danger);
+  color: white;
+  font-size: 0.7rem;
+  font-weight: 700;
+  width: 18px;
+  height: 18px;
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Switcher Dropdown */
+.portals-switcher-link {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 6px 12px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
+  background: var(--bg-surface);
+  cursor: pointer;
+}
+
+.portals-switcher-link:hover {
+  background: var(--bg-subtle);
+}
+
+/* ==========================================================================
+   Layout & Cards
+   ========================================================================= */
+.main-content {
+  flex: 1;
+  max-width: 1300px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 4rem;
+}
+
+.portal-banner {
+  background: linear-gradient(135deg, #0284c7 0%, #0369a1 60%, #0f766e 100%);
+  color: white;
+  border-radius: var(--radius-lg);
+  padding: 2rem;
+  margin-bottom: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: var(--shadow-md);
+}
+
+.portal-banner.officer {
+  background: linear-gradient(135deg, #d97706 0%, #b45309 60%, #78350f 100%);
+}
+
+.portal-banner.admin {
+  background: linear-gradient(135deg, #4f46e5 0%, #3730a3 60%, #1e1b4b 100%);
+}
+
+.banner-title {
+  font-size: 1.75rem;
+  font-weight: 800;
+  margin-bottom: 0.25rem;
+}
+
+.banner-desc {
+  font-size: 0.95rem;
+  opacity: 0.9;
+}
+
+.card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 1.5rem;
+  box-shadow: var(--shadow-sm);
+  margin-bottom: 1.5rem;
+  transition: box-shadow 0.2s;
+}
+
+.card:hover {
+  box-shadow: var(--shadow-md);
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.25rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.card-title {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* KPI Cards Grid */
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1.25rem;
+  margin-bottom: 2rem;
+}
+
+.kpi-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 1.25rem;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+.kpi-title {
+  font-size: 0.825rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  letter-spacing: 0.03em;
+  margin-bottom: 0.35rem;
+}
+
+.kpi-value {
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  line-height: 1.2;
+}
+
+.kpi-sub {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  margin-top: 0.25rem;
+}
+
+.kpi-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+}
+
+/* ==========================================================================
+   Buttons & Inputs
+   ========================================================================== */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  font-family: inherit;
+  font-size: 0.9rem;
+  font-weight: 600;
+  padding: 0.6rem 1.2rem;
+  border-radius: var(--radius-md);
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-decoration: none;
+}
+
+.btn-primary {
+  background: var(--primary);
+  color: white;
+}
+.btn-primary:hover {
+  background: var(--primary-hover);
+}
+
+.btn-secondary {
+  background: var(--bg-subtle);
+  border-color: var(--border);
+  color: var(--text-primary);
+}
+.btn-secondary:hover {
+  background: var(--border);
+}
+
+.btn-success {
+  background: var(--success);
+  color: white;
+}
+.btn-success:hover {
+  background: #15803d;
+}
+
+.btn-danger {
+  background: var(--danger);
+  color: white;
+}
+.btn-danger:hover {
+  background: #b91c1c;
+}
+
+.btn-warning {
+  background: var(--warning);
+  color: white;
+}
+.btn-warning:hover {
+  background: #b45309;
+}
+
+.btn-sm {
+  padding: 0.35rem 0.75rem;
+  font-size: 0.8rem;
+}
+
+.form-group {
+  margin-bottom: 1.15rem;
+}
+
+.form-label {
+  display: block;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin-bottom: 0.4rem;
+}
+
+.form-control {
+  width: 100%;
+  padding: 0.65rem 0.85rem;
+  font-size: 0.9rem;
+  font-family: inherit;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--bg-surface);
+  color: var(--text-primary);
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.form-control:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.15);
+}
+
+textarea.form-control {
+  min-height: 80px;
+  resize: vertical;
+}
+
+/* ==========================================================================
+   Claim Status Badges (The exact 6 statuses)
+   ========================================================================== */
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 4px 10px;
+  border-radius: var(--radius-full);
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+}
+
+.status-badge.submitted {
+  background: #e2e8f0;
+  color: #334155;
+  border: 1px solid #cbd5e1;
+}
+
+.status-badge.under-review {
+  background: #fef3c7;
+  color: #92400e;
+  border: 1px solid #fde68a;
+}
+
+.status-badge.documents-required {
+  background: #fee2e2;
+  color: #991b1b;
+  border: 1px solid #fecaca;
+  animation: pulse-danger 2s infinite;
+}
+
+@keyframes pulse-danger {
+  0% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.4); }
+  70% { box-shadow: 0 0 0 6px rgba(220, 38, 38, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0); }
+}
+
+.status-badge.approved {
+  background: #dcfce7;
+  color: #166534;
+  border: 1px solid #bbf7d0;
+}
+
+.status-badge.rejected {
+  background: #f1f5f9;
+  color: #64748b;
+  border: 1px solid #e2e8f0;
+  text-decoration: line-through;
+}
+
+.status-badge.payment-completed {
+  background: #ede9fe;
+  color: #5b21b6;
+  border: 1px solid #ddd6fe;
+}
+
+/* ==========================================================================
+   6-Stage Claim Progress Stepper
+   ========================================================================== */
+.stepper-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 1.5rem 0;
+  position: relative;
+  padding: 0 1rem;
+}
+
+.stepper-progress-line {
+  position: absolute;
+  top: 18px;
+  left: 2rem;
+  right: 2rem;
+  height: 4px;
+  background: var(--border);
+  z-index: 1;
+}
+
+.stepper-progress-active {
+  position: absolute;
+  top: 18px;
+  left: 2rem;
+  height: 4px;
+  background: var(--primary);
+  z-index: 2;
+  transition: width 0.4s ease;
+}
+
+.stepper-step {
+  position: relative;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+  min-width: 90px;
+}
+
+.step-circle {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-full);
+  background: var(--bg-surface);
+  border: 2px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  transition: all 0.2s;
+}
+
+.stepper-step.active .step-circle {
+  border-color: var(--primary);
+  background: var(--primary);
+  color: white;
+  box-shadow: 0 0 0 4px var(--primary-light);
+}
+
+.stepper-step.completed .step-circle {
+  border-color: var(--success);
+  background: var(--success);
+  color: white;
+}
+
+.stepper-step.alert .step-circle {
+  border-color: var(--danger);
+  background: var(--danger);
+  color: white;
+  box-shadow: 0 0 0 4px var(--danger-light);
+}
+
+.step-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-align: center;
+  color: var(--text-secondary);
+}
+
+.stepper-step.active .step-label {
+  color: var(--primary);
+}
+.stepper-step.alert .step-label {
+  color: var(--danger);
+}
+
+/* ==========================================================================
+   Data Tables
+   ========================================================================== */
+.table-responsive {
+  overflow-x: auto;
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+  text-align: left;
+}
+
+.data-table th {
+  background: var(--bg-subtle);
+  padding: 0.75rem 1rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+  border-bottom: 2px solid var(--border);
+  white-space: nowrap;
+}
+
+.data-table td {
+  padding: 0.85rem 1rem;
+  border-bottom: 1px solid var(--border);
+  color: var(--text-primary);
+  vertical-align: middle;
+}
+
+.data-table tbody tr:hover {
+  background: #f8fafc;
+}
+
+/* ==========================================================================
+   Modals
+   ========================================================================== */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(4px);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 50;
+  padding: 1.5rem;
+}
+
+.modal-overlay.open {
+  display: flex;
+}
+
+.modal-container {
+  background: var(--bg-surface);
+  border-radius: var(--radius-lg);
+  max-width: 650px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: var(--shadow-xl);
+  animation: modal-pop 0.25s ease-out;
+}
+
+.modal-container.large {
+  max-width: 850px;
+}
+
+@keyframes modal-pop {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.modal-header {
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.modal-title {
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: var(--text-primary);
+}
+
+.modal-close {
+  background: transparent;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: var(--text-muted);
+}
+.modal-close:hover {
+  color: var(--text-primary);
+}
+
+.modal-body {
+  padding: 1.5rem;
+}
+
+.modal-footer {
+  padding: 1rem 1.5rem;
+  border-top: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  background: var(--bg-subtle);
+  border-bottom-left-radius: var(--radius-lg);
+  border-bottom-right-radius: var(--radius-lg);
+}
+
+/* ==========================================================================
+   Notifications Drawer
+   ========================================================================== */
+.notif-dropdown {
+  position: absolute;
+  top: 60px;
+  right: 1.5rem;
+  width: 360px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-xl);
+  display: none;
+  z-index: 45;
+  max-height: 480px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.notif-dropdown.hidden {
+  display: none !important;
+}
+
+.notif-header {
+  padding: 0.85rem 1rem;
+  background: var(--bg-subtle);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.notif-list {
+  overflow-y: auto;
+  max-height: 400px;
+}
+
+.notif-item {
+  padding: 0.85rem 1rem;
+  border-bottom: 1px solid var(--border);
+  transition: background 0.2s;
+  cursor: pointer;
+}
+
+.notif-item:hover {
+  background: #f8fafc;
+}
+
+.notif-item.unread {
+  background: #f0fdf4;
+  border-left: 3px solid var(--success);
+}
+
+.notif-item.unread.urgent {
+  background: #fef2f2;
+  border-left: 3px solid var(--danger);
+}
+
+.notif-item-title {
+  font-size: 0.85rem;
+  font-weight: 700;
+  margin-bottom: 0.2rem;
+  display: flex;
+  justify-content: space-between;
+}
+
+.notif-item-msg {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+}
+
+.notif-item-time {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+}
+
+/* ==========================================================================
+   Urgent Action Alert Banner
+   ========================================================================== */
+.urgent-banner {
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-left: 4px solid var(--danger);
+  border-radius: var(--radius-md);
+  padding: 1rem 1.25rem;
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.urgent-banner-title {
+  font-weight: 700;
+  color: #991b1b;
+  font-size: 0.95rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.urgent-banner-desc {
+  font-size: 0.85rem;
+  color: #7f1d1d;
+  margin-top: 0.2rem;
+}
+
+/* ==========================================================================
+   Policy Progress Bar
+   ========================================================================== */
+.policy-bar-container {
+  height: 12px;
+  background: #e2e8f0;
+  border-radius: var(--radius-full);
+  overflow: hidden;
+  margin: 0.75rem 0;
+}
+
+.policy-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #10b981 0%, #0284c7 100%);
+  border-radius: var(--radius-full);
+  transition: width 0.5s ease;
+}
+
+/* ==========================================================================
+   Document Upload Zone
+   ========================================================================== */
+.upload-dropzone {
+  border: 2px dashed var(--primary);
+  background: #f0f9ff;
+  border-radius: var(--radius-md);
+  padding: 1.75rem;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.upload-dropzone:hover {
+  background: #e0f2fe;
+}
+
+.uploaded-doc-pill {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.5rem 0.75rem;
+  background: var(--bg-subtle);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  margin-top: 0.5rem;
+  font-size: 0.85rem;
+}
+
+/* Toast */
+.toast-container {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  z-index: 60;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.toast {
+  background: var(--text-primary);
+  color: white;
+  padding: 0.85rem 1.25rem;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+  font-size: 0.9rem;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  animation: toast-in 0.3s ease;
+}
+
+@keyframes toast-in {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+</style>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%230284c7'><path d='M12 2L4 5v6.09c0 5.05 3.41 9.76 8 10.91 4.59-1.15 8-5.86 8-10.91V5l-8-3zm1 14h-2v-4H7v-2h4V6h2v4h4v2h-4v4z'/></svg>">
   <style>
     .hub-hero {
@@ -251,6 +1142,1358 @@
   </main>
 
   <!-- Shared API Scripts -->
-  <script src="js/api.js"></script>
+  <script>
+/**
+ * CareClaim Shared Data & API Sync Layer
+ * Supports both HTTP REST API (http://localhost:8080) and LocalStorage Offline Mode
+ * Real-time inter-portal communication via BroadcastChannel
+ */
+
+const CareClaimAPI = (function() {
+  const API_BASE = 'http://localhost:8080/api';
+  const broadcast = ('BroadcastChannel' in window) ? new BroadcastChannel('careclaim_sync_bus') : null;
+
+  // LocalStorage keys
+  const KEYS = {
+    USERS: 'careclaim_users_v2',
+    POLICIES: 'careclaim_policies_v2',
+    CLAIMS: 'careclaim_claims_v2',
+    NOTIFS: 'careclaim_notifs_v2',
+    SESSION: 'careclaim_current_session_v2'
+  };
+
+  // Seed Data for offline or initial storage
+  const SEED_USERS = [
+    {
+      id: "USR-ADMIN-01",
+      username: "admin",
+      name: "Chief Claims Administrator",
+      email: "admin@healthclaim.com",
+      password: "admin123",
+      role: "ADMIN",
+      phone: "+1-800-555-0199",
+      dateOfBirth: "1985-04-12",
+      address: "National Health Authority HQ, Suite 400",
+      policyId: "",
+      createdAt: "2026-01-01 09:00"
+    },
+    {
+      id: "USR-OFFICER-01",
+      username: "officer.michael",
+      name: "Dr. Michael Chang",
+      email: "officer.michael@healthclaim.com",
+      password: "officer123",
+      role: "CLAIM_OFFICER",
+      phone: "+1-800-555-0211",
+      dateOfBirth: "1982-09-18",
+      address: "Clinical Audit Division, Room 302",
+      policyId: "",
+      createdAt: "2026-01-05 10:00"
+    },
+    {
+      id: "USR-OFFICER-02",
+      username: "officer.sarah",
+      name: "Sarah Jenkins, RN",
+      email: "officer.sarah@healthclaim.com",
+      password: "officer123",
+      role: "CLAIM_OFFICER",
+      phone: "+1-800-555-0212",
+      dateOfBirth: "1989-03-24",
+      address: "Clinical Audit Division, Room 304",
+      policyId: "",
+      createdAt: "2026-01-10 11:30"
+    },
+    {
+      id: "USR-PATIENT-01",
+      username: "johndoe",
+      name: "John Doe",
+      email: "john.doe@example.com",
+      password: "user123",
+      role: "PATIENT",
+      phone: "+1-555-0143",
+      dateOfBirth: "1990-07-15",
+      address: "742 Evergreen Terrace, Springfield, IL",
+      policyId: "POL-1001",
+      createdAt: "2026-01-15 14:20"
+    },
+    {
+      id: "USR-PATIENT-02",
+      username: "sarahsmith",
+      name: "Sarah Smith",
+      email: "sarah.smith@example.com",
+      password: "user123",
+      role: "PATIENT",
+      phone: "+1-555-0188",
+      dateOfBirth: "1994-11-23",
+      address: "10880 Wilshire Blvd, Los Angeles, CA",
+      policyId: "POL-1002",
+      createdAt: "2026-02-01 09:45"
+    },
+    {
+      id: "USR-PATIENT-03",
+      username: "robertchen",
+      name: "Robert Chen",
+      email: "robert.chen@example.com",
+      password: "user123",
+      role: "PATIENT",
+      phone: "+1-555-0294",
+      dateOfBirth: "1986-05-30",
+      address: "450 Lexington Ave, New York, NY",
+      policyId: "POL-1003",
+      createdAt: "2026-02-10 16:10"
+    }
+  ];
+
+  const SEED_POLICIES = [
+    {
+      id: "POL-1001",
+      userId: "USR-PATIENT-01",
+      policyNumber: "HC-GOLD-948271",
+      policyName: "CareGold Comprehensive Family Health Plan",
+      insurer: "BlueCross Health Assurance",
+      insurerContact: "+1-800-555-BLUE",
+      insurerEmail: "claims@bluecross-care.com",
+      networkHospitals: "8,200+ Cashless Network Hospitals",
+      category: "Comprehensive Family Floater",
+      totalSumInsured: 50000.0,
+      remainingSumInsured: 45000.0,
+      deductible: 500.0,
+      copayPercentage: 10,
+      startDate: "2026-01-01",
+      endDate: "2026-12-31",
+      status: "ACTIVE",
+      description: "Full coverage for inpatient hospitalization, surgery, ICU charges, and diagnostics."
+    },
+    {
+      id: "POL-1002",
+      userId: "USR-PATIENT-02",
+      policyNumber: "HC-PLAT-884102",
+      policyName: "Platinum Elite Executive Health Shield",
+      insurer: "Premier Health Global",
+      insurerContact: "+1-800-777-PREM",
+      insurerEmail: "executive@premierhealth.com",
+      networkHospitals: "12,500+ Worldwide Cashless Facilities",
+      category: "Executive Comprehensive Plan",
+      totalSumInsured: 100000.0,
+      remainingSumInsured: 100000.0,
+      deductible: 250.0,
+      copayPercentage: 5,
+      startDate: "2026-03-01",
+      endDate: "2027-02-28",
+      status: "ACTIVE",
+      description: "Zero-sublimit executive hospitalization coverage including private suites."
+    },
+    {
+      id: "POL-1003",
+      userId: "USR-PATIENT-03",
+      policyNumber: "HC-SILV-332918",
+      policyName: "Silver Standard Healthcare Shield",
+      insurer: "Guardian Mutual Health",
+      insurerContact: "+1-800-333-GDN",
+      insurerEmail: "support@guardianmutual.com",
+      networkHospitals: "5,400+ Regional Hospitals",
+      category: "Individual Standard Plan",
+      totalSumInsured: 25000.0,
+      remainingSumInsured: 25000.0,
+      deductible: 750.0,
+      copayPercentage: 15,
+      startDate: "2026-01-01",
+      endDate: "2026-12-31",
+      status: "ACTIVE",
+      description: "Essential hospitalization plan covering emergency medical inpatient treatment."
+    },
+    {
+      id: "POL-1004",
+      userId: "",
+      policyNumber: "HC-CRIT-551029",
+      policyName: "VitalCare Critical Illness Comprehensive",
+      insurer: "Aegis Life & Health",
+      insurerContact: "+1-800-999-AEGIS",
+      insurerEmail: "claims@aegiscare.com",
+      networkHospitals: "9,000+ Specialty Centers",
+      category: "Critical Illness Rider",
+      totalSumInsured: 75000.0,
+      remainingSumInsured: 75000.0,
+      deductible: 0.0,
+      copayPercentage: 0,
+      startDate: "2026-06-01",
+      endDate: "2027-05-31",
+      status: "ACTIVE",
+      description: "Reimbursement coverage for designated critical medical conditions."
+    }
+  ];
+
+  const SEED_CLAIMS = [
+    {
+      id: "CLM-2026-1001",
+      userId: "USR-PATIENT-01",
+      userName: "John Doe",
+      userEmail: "john.doe@example.com",
+      userPhone: "+1-555-0143",
+      policyId: "POL-1001",
+      policyNumber: "HC-GOLD-948271",
+      policyName: "CareGold Comprehensive Family Health Plan",
+      patientName: "John Doe",
+      patientAge: 36,
+      patientGender: "Male",
+      patientRelation: "Self",
+      hospitalName: "St. Jude Memorial Hospital",
+      hospitalCity: "New York, NY",
+      admissionDate: "2026-10-12",
+      dischargeDate: "2026-10-15",
+      roomType: "Single Private Room",
+      diagnosis: "Acute Appendicitis with laparoscopic appendectomy",
+      ailmentCategory: "General Surgery",
+      treatmentType: "Inpatient",
+      expenseBreakdown: {
+        hospitalCharges: 1400.0,
+        consultationFees: 2200.0,
+        medicines: 850.0,
+        investigations: 950.0,
+        others: 400.0
+      },
+      claimedAmount: 5800.0,
+      approvedAmount: 5500.0,
+      deductibleApplied: 500.0,
+      copayApplied: 0.0,
+      netPayoutAmount: 5000.0,
+      status: "Payment Completed",
+      assignedOfficerId: "USR-OFFICER-01",
+      assignedOfficerName: "Dr. Michael Chang",
+      assignedDate: "2026-10-16 10:15",
+      officerRecommendation: "RECOMMEND_APPROVAL",
+      officerRecommendedAmount: 5000.0,
+      officerRemarks: "Hospital invoices and discharge notes verified with St. Jude billing. Clean clinical audit.",
+      patientRemarks: "Payment completed. Reimbursement of $5,000.00 transferred under Ref: TXN-EFT-994182.",
+      adminRemarks: "Final payout approved and disbursed.",
+      paymentStatus: "COMPLETED",
+      paymentReference: "TXN-EFT-994182",
+      paymentDate: "2026-10-19 14:30",
+      paymentMethod: "Direct Bank ACH / EFT",
+      documents: [
+        { id: "DOC-101", name: "StJude_Final_Itemized_Invoice.pdf", type: "Hospital Bill", url: "#", uploadedAt: "2026-10-15 17:00", fileSize: "1.4 MB", verified: true, verificationNotes: "Matches surgical billing ledger" },
+        { id: "DOC-102", name: "Surgical_Discharge_Summary_Appendectomy.pdf", type: "Discharge Summary", url: "#", uploadedAt: "2026-10-15 17:05", fileSize: "850 KB", verified: true, verificationNotes: "Signed by Dr. Vance, Surgeon" },
+        { id: "DOC-103", name: "Diagnostic_Ultrasound_Report.pdf", type: "Medical Report", url: "#", uploadedAt: "2026-10-15 17:10", fileSize: "620 KB", verified: true, verificationNotes: "Confirmed pathology diagnosis" }
+      ],
+      statusHistory: [
+        { status: "Submitted", timestamp: "2026-10-15 17:15", actor: "John Doe", remarks: "Claim filed with hospitalization invoices." },
+        { status: "Under Review", timestamp: "2026-10-16 10:15", actor: "Dr. Michael Chang", remarks: "Clinical document audit initiated." },
+        { status: "Approved", timestamp: "2026-10-18 16:40", actor: "Admin", remarks: "Approved for $5,000.00 net reimbursement." },
+        { status: "Payment Completed", timestamp: "2026-10-19 14:30", actor: "Finance Admin", remarks: "Disbursement completed via ACH (TXN-EFT-994182)." }
+      ],
+      createdAt: "2026-10-15 17:15",
+      updatedAt: "2026-10-19 14:30"
+    },
+    {
+      id: "CLM-2026-1002",
+      userId: "USR-PATIENT-02",
+      userName: "Sarah Smith",
+      userEmail: "sarah.smith@example.com",
+      userPhone: "+1-555-0188",
+      policyId: "POL-1002",
+      policyNumber: "HC-PLAT-884102",
+      policyName: "Platinum Elite Executive Health Shield",
+      patientName: "Sarah Smith",
+      patientAge: 32,
+      patientGender: "Female",
+      patientRelation: "Self",
+      hospitalName: "Cedar Valley General Hospital",
+      hospitalCity: "Los Angeles, CA",
+      admissionDate: "2026-11-01",
+      dischargeDate: "2026-11-03",
+      roomType: "Semi-Private Room",
+      diagnosis: "Right Knee Meniscal Tear with Arthroscopic Repair",
+      ailmentCategory: "Orthopedics",
+      treatmentType: "Inpatient",
+      expenseBreakdown: {
+        hospitalCharges: 2100.0,
+        consultationFees: 2800.0,
+        medicines: 950.0,
+        investigations: 1150.0,
+        others: 200.0
+      },
+      claimedAmount: 7200.0,
+      approvedAmount: 0.0,
+      deductibleApplied: 0.0,
+      copayApplied: 0.0,
+      netPayoutAmount: 0.0,
+      status: "Documents Required",
+      assignedOfficerId: "USR-OFFICER-01",
+      assignedOfficerName: "Dr. Michael Chang",
+      assignedDate: "2026-11-04 11:00",
+      officerRecommendation: "NEED_DOCUMENTS",
+      officerRemarks: "Missing breakdown of pharmaceutical charges and surgeon operative report.",
+      requestedDocuments: "Please upload: 1) Detailed pharmacy tax invoice; 2) Post-operative surgical notes signed by orthopedic surgeon.",
+      patientRemarks: "Action Required: Please upload detailed pharmacy bill and signed surgical notes.",
+      paymentStatus: "PENDING",
+      documents: [
+        { id: "DOC-201", name: "CedarValley_Interim_Bill.pdf", type: "Hospital Bill", url: "#", uploadedAt: "2026-11-03 14:00", fileSize: "980 KB", verified: true, verificationNotes: "Room and nursing charges verified" },
+        { id: "DOC-202", name: "MRI_Right_Knee_Report.pdf", type: "Medical Report", url: "#", uploadedAt: "2026-11-03 14:05", fileSize: "1.1 MB", verified: true, verificationNotes: "Tear confirmed" }
+      ],
+      statusHistory: [
+        { status: "Submitted", timestamp: "2026-11-03 14:10", actor: "Sarah Smith", remarks: "Claim filed online." },
+        { status: "Under Review", timestamp: "2026-11-04 11:00", actor: "Dr. Michael Chang", remarks: "Clinical review commenced." },
+        { status: "Documents Required", timestamp: "2026-11-04 11:30", actor: "Dr. Michael Chang", remarks: "Requested pharmacy invoices and surgical notes." }
+      ],
+      createdAt: "2026-11-03 14:10",
+      updatedAt: "2026-11-04 11:30"
+    },
+    {
+      id: "CLM-2026-1003",
+      userId: "USR-PATIENT-03",
+      userName: "Robert Chen",
+      userEmail: "robert.chen@example.com",
+      userPhone: "+1-555-0294",
+      policyId: "POL-1003",
+      policyNumber: "HC-SILV-332918",
+      policyName: "Silver Standard Healthcare Shield",
+      patientName: "Robert Chen",
+      patientAge: 40,
+      patientGender: "Male",
+      patientRelation: "Self",
+      hospitalName: "Mercy General Hospital",
+      hospitalCity: "New York, NY",
+      admissionDate: "2026-11-10",
+      dischargeDate: "2026-11-13",
+      roomType: "Single Private Room",
+      diagnosis: "Coronary Artery Disease with Percutaneous Transluminal Angioplasty (PTCA)",
+      ailmentCategory: "Cardiology",
+      treatmentType: "Inpatient",
+      expenseBreakdown: {
+        hospitalCharges: 4500.0,
+        consultationFees: 5200.0,
+        medicines: 1800.0,
+        investigations: 2600.0,
+        others: 400.0
+      },
+      claimedAmount: 14500.0,
+      approvedAmount: 0.0,
+      status: "Under Review",
+      assignedOfficerId: "USR-OFFICER-02",
+      assignedOfficerName: "Sarah Jenkins, RN",
+      assignedDate: "2026-11-14 09:30",
+      officerRecommendation: "RECOMMEND_APPROVAL",
+      officerRecommendedAmount: 13000.0,
+      officerRemarks: "Stent serial and angiogram confirmed. Recommending approval for $13,000.",
+      patientRemarks: "Your claim is being audited by Claims Officer Sarah Jenkins, RN.",
+      paymentStatus: "PENDING",
+      documents: [
+        { id: "DOC-301", name: "Mercy_Cardiac_Inpatient_Bill.pdf", type: "Hospital Bill", url: "#", uploadedAt: "2026-11-13 18:00", fileSize: "2.1 MB", verified: true, verificationNotes: "Cardiac cath lab bill matches" },
+        { id: "DOC-302", name: "Coronary_Angiogram_And_Stent_Sticker.pdf", type: "Medical Report", url: "#", uploadedAt: "2026-11-13 18:05", fileSize: "1.7 MB", verified: true, verificationNotes: "Drug-eluting stent sticker authenticated" }
+      ],
+      statusHistory: [
+        { status: "Submitted", timestamp: "2026-11-13 18:10", actor: "Robert Chen", remarks: "Claim filed." },
+        { status: "Under Review", timestamp: "2026-11-14 09:30", actor: "Sarah Jenkins, RN", remarks: "Clinical audit in progress." }
+      ],
+      createdAt: "2026-11-13 18:10",
+      updatedAt: "2026-11-14 10:00"
+    },
+    {
+      id: "CLM-2026-1004",
+      userId: "USR-PATIENT-01",
+      userName: "John Doe",
+      userEmail: "john.doe@example.com",
+      userPhone: "+1-555-0143",
+      policyId: "POL-1001",
+      policyNumber: "HC-GOLD-948271",
+      policyName: "CareGold Comprehensive Family Health Plan",
+      patientName: "Emily Doe",
+      patientAge: 8,
+      patientGender: "Female",
+      patientRelation: "Child",
+      hospitalName: "Children's Specialized Urgent Care",
+      hospitalCity: "Springfield, IL",
+      admissionDate: "2026-11-18",
+      dischargeDate: "2026-11-19",
+      roomType: "Pediatric Day Care",
+      diagnosis: "Distal Radial Bone Fracture Reduction and Casting",
+      ailmentCategory: "Pediatrics",
+      treatmentType: "Day Care",
+      expenseBreakdown: {
+        hospitalCharges: 600.0,
+        consultationFees: 950.0,
+        medicines: 250.0,
+        investigations: 500.0,
+        others: 100.0
+      },
+      claimedAmount: 2400.0,
+      status: "Submitted",
+      patientRemarks: "Claim received successfully. Awaiting assignment to a claim adjudication officer.",
+      paymentStatus: "PENDING",
+      documents: [
+        { id: "DOC-401", name: "UrgentCare_Pediatric_Invoice.pdf", type: "Hospital Bill", url: "#", uploadedAt: "2026-11-19 16:00", fileSize: "750 KB", verified: false, verificationNotes: "" },
+        { id: "DOC-402", name: "Forearm_XRay_Report.pdf", type: "Medical Report", url: "#", uploadedAt: "2026-11-19 16:05", fileSize: "1.3 MB", verified: false, verificationNotes: "" }
+      ],
+      statusHistory: [
+        { status: "Submitted", timestamp: "2026-11-19 16:10", actor: "John Doe", remarks: "Claim filed online." }
+      ],
+      createdAt: "2026-11-19 16:10",
+      updatedAt: "2026-11-19 16:10"
+    },
+    {
+      id: "CLM-2026-1005",
+      userId: "USR-PATIENT-02",
+      userName: "Sarah Smith",
+      userEmail: "sarah.smith@example.com",
+      userPhone: "+1-555-0188",
+      policyId: "POL-1002",
+      policyNumber: "HC-PLAT-884102",
+      policyName: "Platinum Elite Executive Health Shield",
+      patientName: "Sarah Smith",
+      patientAge: 32,
+      patientGender: "Female",
+      patientRelation: "Self",
+      hospitalName: "Beverly Hills Aesthetics Surgical Center",
+      hospitalCity: "Los Angeles, CA",
+      admissionDate: "2026-10-25",
+      dischargeDate: "2026-10-26",
+      roomType: "Deluxe Suite",
+      diagnosis: "Elective Cosmetic Rhinoplasty and Septum Contouring",
+      ailmentCategory: "Cosmetic Surgery",
+      treatmentType: "Day Care",
+      expenseBreakdown: {
+        hospitalCharges: 1800.0,
+        consultationFees: 2500.0,
+        medicines: 500.0,
+        investigations: 0.0,
+        others: 0.0
+      },
+      claimedAmount: 4800.0,
+      status: "Rejected",
+      assignedOfficerId: "USR-OFFICER-01",
+      assignedOfficerName: "Dr. Michael Chang",
+      assignedDate: "2026-10-27 10:00",
+      officerRecommendation: "RECOMMEND_REJECTION",
+      officerRemarks: "Elective aesthetic procedure without documented airway impairment.",
+      rejectionReason: "Policy Exclusion Section 4.2: Cosmetic and aesthetic surgery without medical necessity is non-covered.",
+      patientRemarks: "Claim rejected due to policy exclusions regarding elective aesthetic surgery.",
+      paymentStatus: "NOT_APPLICABLE",
+      documents: [
+        { id: "DOC-501", name: "Aesthetics_Invoice_Rhinoplasty.pdf", type: "Hospital Bill", url: "#", uploadedAt: "2026-10-26 15:00", fileSize: "820 KB", verified: true, verificationNotes: "Cosmetic charges noted" }
+      ],
+      statusHistory: [
+        { status: "Submitted", timestamp: "2026-10-26 15:10", actor: "Sarah Smith", remarks: "Claim filed." },
+        { status: "Under Review", timestamp: "2026-10-27 10:00", actor: "Dr. Michael Chang", remarks: "Review uncovered aesthetic non-covered procedure." },
+        { status: "Rejected", timestamp: "2026-10-28 11:20", actor: "Admin", remarks: "Rejected under Section 4.2 Exclusion." }
+      ],
+      createdAt: "2026-10-26 15:10",
+      updatedAt: "2026-10-28 11:20"
+    }
+  ];
+
+  const SEED_NOTIFS = [
+    {
+      id: "NTF-101",
+      userId: "USR-PATIENT-01",
+      claimId: "CLM-2026-1001",
+      title: "Payment Completed: $5,000.00 Disbursed",
+      message: "Your reimbursement claim CLM-2026-1001 has been settled with payment ref TXN-EFT-994182.",
+      type: "PAYMENT",
+      read: false,
+      createdAt: "2026-10-19 14:32"
+    },
+    {
+      id: "NTF-102",
+      userId: "USR-PATIENT-01",
+      claimId: "CLM-2026-1001",
+      title: "Claim Approved: $5,000.00",
+      message: "Your claim CLM-2026-1001 has been approved by the claims administrator.",
+      type: "APPROVAL",
+      read: true,
+      createdAt: "2026-10-18 16:45"
+    },
+    {
+      id: "NTF-103",
+      userId: "USR-PATIENT-02",
+      claimId: "CLM-2026-1002",
+      title: "Action Required: Additional Documents Requested",
+      message: "Claim Officer Dr. Michael Chang has requested itemized pharmacy bills and signed surgical notes for CLM-2026-1002.",
+      type: "DOCUMENTS_REQUIRED",
+      read: false,
+      createdAt: "2026-11-04 11:32"
+    },
+    {
+      id: "NTF-104",
+      userId: "USR-PATIENT-03",
+      claimId: "CLM-2026-1003",
+      title: "Claim Status Update: Under Review",
+      message: "Claim CLM-2026-1003 has been assigned to Sarah Jenkins, RN and is actively under clinical audit.",
+      type: "STATUS_UPDATE",
+      read: false,
+      createdAt: "2026-11-14 09:35"
+    },
+    {
+      id: "NTF-105",
+      userId: "USR-PATIENT-01",
+      claimId: "CLM-2026-1004",
+      title: "Claim Submitted Successfully",
+      message: "Your claim CLM-2026-1004 has been received and registered in our queue.",
+      type: "STATUS_UPDATE",
+      read: true,
+      createdAt: "2026-11-19 16:11"
+    }
+  ];
+
+  // Helper to init storage if empty
+  function initStorage() {
+    if (!localStorage.getItem(KEYS.USERS)) localStorage.setItem(KEYS.USERS, JSON.stringify(SEED_USERS));
+    if (!localStorage.getItem(KEYS.POLICIES)) localStorage.setItem(KEYS.POLICIES, JSON.stringify(SEED_POLICIES));
+    if (!localStorage.getItem(KEYS.CLAIMS)) localStorage.setItem(KEYS.CLAIMS, JSON.stringify(SEED_CLAIMS));
+    if (!localStorage.getItem(KEYS.NOTIFS)) localStorage.setItem(KEYS.NOTIFS, JSON.stringify(SEED_NOTIFS));
+  }
+  initStorage();
+
+  function notifyChange(event, payload) {
+    if (broadcast) {
+      broadcast.postMessage({ event, payload, timestamp: Date.now() });
+    }
+    // Also trigger custom window event
+    window.dispatchEvent(new CustomEvent('careclaim_sync', { detail: { event, payload } }));
+  }
+
+  // Listen for broadcasts from other tabs
+  if (broadcast) {
+    broadcast.onmessage = (e) => {
+      window.dispatchEvent(new CustomEvent('careclaim_sync', { detail: e.data }));
+    };
+  }
+
+  // Detect if backend server is responsive
+  let serverAvailable = null;
+  async function checkServer() {
+    if (serverAvailable !== null) return serverAvailable;
+    if (window.location.protocol === 'file:') {
+      serverAvailable = false;
+      return false;
+    }
+    try {
+      const res = await fetch(`${API_BASE}/policies`, { method: 'GET', signal: AbortSignal.timeout(1500) });
+      serverAvailable = res.ok;
+    } catch (e) {
+      serverAvailable = false;
+    }
+    return serverAvailable;
+  }
+
+  return {
+    isServerActive: async () => await checkServer(),
+
+    onSync: (callback) => {
+      window.addEventListener('careclaim_sync', (e) => callback(e.detail));
+    },
+
+    // Session Management
+    getSession: () => {
+      try {
+        return JSON.parse(localStorage.getItem(KEYS.SESSION));
+      } catch (e) { return null; }
+    },
+
+    setSession: (user) => {
+      localStorage.setItem(KEYS.SESSION, JSON.stringify(user));
+      notifyChange('SESSION_CHANGED', user);
+    },
+
+    clearSession: () => {
+      localStorage.removeItem(KEYS.SESSION);
+      notifyChange('SESSION_CHANGED', null);
+    },
+
+    // 1. Auth Methods
+    login: async (emailOrUsername, password) => {
+      const isOnline = await checkServer();
+      if (isOnline) {
+        try {
+          const res = await fetch(`${API_BASE}/auth/login`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email: emailOrUsername, password })
+          });
+          const data = await res.json();
+          if (data.success) {
+            CareClaimAPI.setSession(data.user);
+            return data.user;
+          }
+        } catch (e) { console.warn('Server login error, using local fallback', e); }
+      }
+
+      // Local fallback
+      initStorage();
+      const users = JSON.parse(localStorage.getItem(KEYS.USERS) || '[]');
+      const q = emailOrUsername.trim().toLowerCase();
+      const u = users.find(x => (x.email.toLowerCase() === q || x.username.toLowerCase() === q) && x.password === password);
+      if (u) {
+        const safeUser = { ...u };
+        delete safeUser.password;
+        CareClaimAPI.setSession(safeUser);
+        return safeUser;
+      }
+      throw new Error('Invalid email or password.');
+    },
+
+    register: async (name, email, password, phone, dob, address, policyId) => {
+      const isOnline = await checkServer();
+      if (isOnline) {
+        try {
+          const res = await fetch(`${API_BASE}/auth/register`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name, email, password, phone, dateOfBirth: dob, address, policyId })
+          });
+          const data = await res.json();
+          if (data.success) {
+            CareClaimAPI.setSession(data.user);
+            notifyChange('USER_REGISTERED', data.user);
+            return data.user;
+          }
+        } catch (e) { console.warn('Server register error, using local fallback', e); }
+      }
+
+      initStorage();
+      const users = JSON.parse(localStorage.getItem(KEYS.USERS) || '[]');
+      const cleanEmail = email.trim().toLowerCase();
+      if (users.some(u => u.email.toLowerCase() === cleanEmail)) {
+        throw new Error('An account with this email address already exists.');
+      }
+
+      const id = 'USR-PATIENT-' + (1000 + users.length + 1);
+      const username = cleanEmail.split('@')[0].replace(/[^a-zA-Z0-9]/g, '');
+      const timestamp = new Date().toISOString().replace('T', ' ').substring(0, 16);
+      const newUser = { id, username, name, email: cleanEmail, password, role: 'PATIENT', phone, dateOfBirth: dob, address, policyId, createdAt: timestamp };
+      users.push(newUser);
+      localStorage.setItem(KEYS.USERS, JSON.stringify(users));
+
+      const safeUser = { ...newUser };
+      delete safeUser.password;
+      CareClaimAPI.setSession(safeUser);
+      notifyChange('USER_REGISTERED', safeUser);
+      return safeUser;
+    },
+
+    forgotPassword: async (email, newPassword) => {
+      const isOnline = await checkServer();
+      if (isOnline) {
+        try {
+          const res = await fetch(`${API_BASE}/auth/forgot-password`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, newPassword })
+          });
+          const data = await res.json();
+          if (data.success) return true;
+        } catch (e) { console.warn('Server forgot password error', e); }
+      }
+
+      initStorage();
+      const users = JSON.parse(localStorage.getItem(KEYS.USERS) || '[]');
+      const u = users.find(x => x.email.toLowerCase() === email.trim().toLowerCase());
+      if (u) {
+        u.password = newPassword;
+        localStorage.setItem(KEYS.USERS, JSON.stringify(users));
+        return true;
+      }
+      throw new Error('No account found for this email address.');
+    },
+
+    getAllUsers: async () => {
+      const isOnline = await checkServer();
+      if (isOnline) {
+        try {
+          const res = await fetch(`${API_BASE}/auth/users`);
+          if (res.ok) return await res.json();
+        } catch (e) {}
+      }
+      initStorage();
+      return JSON.parse(localStorage.getItem(KEYS.USERS) || '[]').map(u => {
+        const copy = { ...u };
+        delete copy.password;
+        return copy;
+      });
+    },
+
+    getClaimOfficers: async () => {
+      const users = await CareClaimAPI.getAllUsers();
+      return users.filter(u => u.role === 'CLAIM_OFFICER');
+    },
+
+    // 2. Policy Methods
+    getAllPolicies: async () => {
+      const isOnline = await checkServer();
+      if (isOnline) {
+        try {
+          const res = await fetch(`${API_BASE}/policies`);
+          if (res.ok) return await res.json();
+        } catch (e) {}
+      }
+      initStorage();
+      return JSON.parse(localStorage.getItem(KEYS.POLICIES) || '[]');
+    },
+
+    getPolicyById: async (id) => {
+      const policies = await CareClaimAPI.getAllPolicies();
+      return policies.find(p => p.id === id || p.policyNumber === id) || null;
+    },
+
+    createPolicy: async (policy) => {
+      const isOnline = await checkServer();
+      if (isOnline) {
+        try {
+          const res = await fetch(`${API_BASE}/policies/create`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(policy)
+          });
+          if (res.ok) {
+            const created = await res.json();
+            notifyChange('POLICY_UPDATED', created);
+            return created;
+          }
+        } catch (e) {}
+      }
+
+      initStorage();
+      const policies = JSON.parse(localStorage.getItem(KEYS.POLICIES) || '[]');
+      if (!policy.id) policy.id = 'POL-' + (1000 + policies.length + 1);
+      if (!policy.remainingSumInsured) policy.remainingSumInsured = policy.totalSumInsured;
+      policy.status = policy.status || 'ACTIVE';
+      policies.push(policy);
+      localStorage.setItem(KEYS.POLICIES, JSON.stringify(policies));
+      notifyChange('POLICY_UPDATED', policy);
+      return policy;
+    },
+
+    updatePolicy: async (policy) => {
+      const isOnline = await checkServer();
+      if (isOnline) {
+        try {
+          const res = await fetch(`${API_BASE}/policies/update`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(policy)
+          });
+          if (res.ok) {
+            const updated = await res.json();
+            notifyChange('POLICY_UPDATED', updated);
+            return updated;
+          }
+        } catch (e) {}
+      }
+
+      initStorage();
+      const policies = JSON.parse(localStorage.getItem(KEYS.POLICIES) || '[]');
+      const idx = policies.findIndex(p => p.id === policy.id);
+      if (idx !== -1) {
+        policies[idx] = policy;
+        localStorage.setItem(KEYS.POLICIES, JSON.stringify(policies));
+        notifyChange('POLICY_UPDATED', policy);
+        return policy;
+      }
+      throw new Error('Policy not found.');
+    },
+
+    // 3. Claims Methods
+    getAllClaims: async (filters = {}) => {
+      const isOnline = await checkServer();
+      if (isOnline) {
+        try {
+          let url = `${API_BASE}/claims`;
+          const params = new URLSearchParams();
+          if (filters.userId) params.append('userId', filters.userId);
+          if (filters.officerId) params.append('officerId', filters.officerId);
+          if ([...params].length > 0) url += `?${params.toString()}`;
+          const res = await fetch(url);
+          if (res.ok) return await res.json();
+        } catch (e) {}
+      }
+
+      initStorage();
+      let claims = JSON.parse(localStorage.getItem(KEYS.CLAIMS) || '[]');
+      if (filters.userId) {
+        claims = claims.filter(c => c.userId === filters.userId);
+      }
+      if (filters.officerId) {
+        claims = claims.filter(c => c.assignedOfficerId === filters.officerId || filters.officerId === 'ALL');
+      }
+      return claims;
+    },
+
+    getClaimById: async (id) => {
+      const isOnline = await checkServer();
+      if (isOnline) {
+        try {
+          const res = await fetch(`${API_BASE}/claims?id=${encodeURIComponent(id)}`);
+          if (res.ok) return await res.json();
+        } catch (e) {}
+      }
+
+      initStorage();
+      const claims = JSON.parse(localStorage.getItem(KEYS.CLAIMS) || '[]');
+      return claims.find(c => c.id.toLowerCase() === id.trim().toLowerCase()) || null;
+    },
+
+    submitClaim: async (claimData) => {
+      const isOnline = await checkServer();
+      if (isOnline) {
+        try {
+          const res = await fetch(`${API_BASE}/claims/submit`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(claimData)
+          });
+          if (res.ok) {
+            const submitted = await res.json();
+            notifyChange('CLAIM_SUBMITTED', submitted);
+            return submitted;
+          }
+        } catch (e) {}
+      }
+
+      initStorage();
+      const claims = JSON.parse(localStorage.getItem(KEYS.CLAIMS) || '[]');
+      const id = 'CLM-2026-' + (1000 + claims.length + 1);
+      const now = new Date().toISOString().replace('T', ' ').substring(0, 16);
+
+      const claim = {
+        ...claimData,
+        id,
+        status: 'Submitted',
+        paymentStatus: 'PENDING',
+        createdAt: now,
+        updatedAt: now,
+        patientRemarks: 'Claim submitted successfully. Awaiting assignment to a claim adjudication officer.',
+        statusHistory: [
+          { status: 'Submitted', timestamp: now, actor: claimData.userName || 'Patient', remarks: 'Claim lodged with medical bills and expenses breakdown.' }
+        ]
+      };
+
+      claims.unshift(claim);
+      localStorage.setItem(KEYS.CLAIMS, JSON.stringify(claims));
+
+      // Create notification
+      await CareClaimAPI.createNotification(
+        claim.userId,
+        claim.id,
+        `Claim Submitted: ${claim.id}`,
+        `Your health insurance claim for ${claim.hospitalName} ($${claim.claimedAmount.toFixed(2)}) has been submitted.`,
+        'STATUS_UPDATE'
+      );
+
+      notifyChange('CLAIM_SUBMITTED', claim);
+      return claim;
+    },
+
+    assignOfficer: async (claimId, officerId, officerName, instructions) => {
+      const isOnline = await checkServer();
+      if (isOnline) {
+        try {
+          const res = await fetch(`${API_BASE}/claims/assign`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ claimId, officerId, officerName, instructions })
+          });
+          if (res.ok) {
+            const updated = await res.json();
+            notifyChange('CLAIM_UPDATED', updated);
+            return updated;
+          }
+        } catch (e) {}
+      }
+
+      initStorage();
+      const claims = JSON.parse(localStorage.getItem(KEYS.CLAIMS) || '[]');
+      const c = claims.find(x => x.id === claimId);
+      if (c) {
+        c.assignedOfficerId = officerId;
+        c.assignedOfficerName = officerName;
+        const now = new Date().toISOString().replace('T', ' ').substring(0, 16);
+        c.assignedDate = now;
+        if (c.status === 'Submitted') c.status = 'Under Review';
+        c.patientRemarks = `Claim assigned to Claims Officer ${officerName} for medical audit.`;
+        c.statusHistory = c.statusHistory || [];
+        c.statusHistory.push({
+          status: 'Under Review',
+          timestamp: now,
+          actor: 'Admin',
+          remarks: `Assigned to ${officerName}. Instructions: ${instructions || 'Verify bills and expenses.'}`
+        });
+        localStorage.setItem(KEYS.CLAIMS, JSON.stringify(claims));
+
+        await CareClaimAPI.createNotification(
+          c.userId,
+          c.id,
+          `Claim Under Review: ${c.id}`,
+          `Your claim is being audited by Claims Officer ${officerName}.`,
+          'STATUS_UPDATE'
+        );
+
+        notifyChange('CLAIM_UPDATED', c);
+        return c;
+      }
+      throw new Error('Claim not found.');
+    },
+
+    verifyDocument: async (claimId, docId, verified, notes) => {
+      const isOnline = await checkServer();
+      if (isOnline) {
+        try {
+          const res = await fetch(`${API_BASE}/claims/verify-document`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ claimId, docId, verified, notes })
+          });
+          if (res.ok) {
+            const updated = await res.json();
+            notifyChange('CLAIM_UPDATED', updated);
+            return updated;
+          }
+        } catch (e) {}
+      }
+
+      initStorage();
+      const claims = JSON.parse(localStorage.getItem(KEYS.CLAIMS) || '[]');
+      const c = claims.find(x => x.id === claimId);
+      if (c && c.documents) {
+        const doc = c.documents.find(d => d.id === docId);
+        if (doc) {
+          doc.verified = verified;
+          doc.verificationNotes = notes;
+          c.updatedAt = new Date().toISOString().replace('T', ' ').substring(0, 16);
+          localStorage.setItem(KEYS.CLAIMS, JSON.stringify(claims));
+          notifyChange('CLAIM_UPDATED', c);
+          return c;
+        }
+      }
+      throw new Error('Document not found.');
+    },
+
+    requestDocuments: async (claimId, requestedDocs, remarks) => {
+      const isOnline = await checkServer();
+      if (isOnline) {
+        try {
+          const res = await fetch(`${API_BASE}/claims/request-docs`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ claimId, requestedDocuments: requestedDocs, remarks })
+          });
+          if (res.ok) {
+            const updated = await res.json();
+            notifyChange('CLAIM_UPDATED', updated);
+            return updated;
+          }
+        } catch (e) {}
+      }
+
+      initStorage();
+      const claims = JSON.parse(localStorage.getItem(KEYS.CLAIMS) || '[]');
+      const c = claims.find(x => x.id === claimId);
+      if (c) {
+        c.status = 'Documents Required';
+        c.requestedDocuments = requestedDocs;
+        c.officerRemarks = remarks;
+        c.patientRemarks = `Documents Required: ${requestedDocs}`;
+        const now = new Date().toISOString().replace('T', ' ').substring(0, 16);
+        c.statusHistory = c.statusHistory || [];
+        c.statusHistory.push({
+          status: 'Documents Required',
+          timestamp: now,
+          actor: c.assignedOfficerName || 'Claim Officer',
+          remarks: `Requested additional documents: ${requestedDocs}`
+        });
+        localStorage.setItem(KEYS.CLAIMS, JSON.stringify(claims));
+
+        await CareClaimAPI.createNotification(
+          c.userId,
+          c.id,
+          `Action Required: Documents Missing for ${c.id}`,
+          `Urgent: ${requestedDocs}`,
+          'DOCUMENTS_REQUIRED'
+        );
+
+        notifyChange('CLAIM_UPDATED', c);
+        return c;
+      }
+      throw new Error('Claim not found.');
+    },
+
+    recommendClaim: async (claimId, recommendation, recommendedAmount, remarks, patientRemarks) => {
+      const isOnline = await checkServer();
+      if (isOnline) {
+        try {
+          const res = await fetch(`${API_BASE}/claims/recommend`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ claimId, recommendation, recommendedAmount, remarks, patientRemarks })
+          });
+          if (res.ok) {
+            const updated = await res.json();
+            notifyChange('CLAIM_UPDATED', updated);
+            return updated;
+          }
+        } catch (e) {}
+      }
+
+      initStorage();
+      const claims = JSON.parse(localStorage.getItem(KEYS.CLAIMS) || '[]');
+      const c = claims.find(x => x.id === claimId);
+      if (c) {
+        c.officerRecommendation = recommendation;
+        c.officerRecommendedAmount = recommendedAmount;
+        c.officerRemarks = remarks;
+        if (patientRemarks) c.patientRemarks = patientRemarks;
+        const now = new Date().toISOString().replace('T', ' ').substring(0, 16);
+        c.statusHistory = c.statusHistory || [];
+        c.statusHistory.push({
+          status: c.status,
+          timestamp: now,
+          actor: c.assignedOfficerName || 'Claim Officer',
+          remarks: `Recommendation: ${recommendation} ($${recommendedAmount}). Remarks: ${remarks}`
+        });
+        localStorage.setItem(KEYS.CLAIMS, JSON.stringify(claims));
+        notifyChange('CLAIM_UPDATED', c);
+        return c;
+      }
+      throw new Error('Claim not found.');
+    },
+
+    updateClaimStatus: async (claimId, newStatus, actorName, remarks) => {
+      const isOnline = await checkServer();
+      if (isOnline) {
+        try {
+          const res = await fetch(`${API_BASE}/claims/update-status`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ claimId, status: newStatus, actor: actorName, remarks })
+          });
+          if (res.ok) {
+            const updated = await res.json();
+            notifyChange('CLAIM_UPDATED', updated);
+            return updated;
+          }
+        } catch (e) {}
+      }
+
+      initStorage();
+      const claims = JSON.parse(localStorage.getItem(KEYS.CLAIMS) || '[]');
+      const c = claims.find(x => x.id === claimId);
+      if (c) {
+        c.status = newStatus;
+        if (remarks) c.patientRemarks = remarks;
+        const now = new Date().toISOString().replace('T', ' ').substring(0, 16);
+        c.statusHistory = c.statusHistory || [];
+        c.statusHistory.push({ status: newStatus, timestamp: now, actor: actorName, remarks: remarks || '' });
+        localStorage.setItem(KEYS.CLAIMS, JSON.stringify(claims));
+
+        await CareClaimAPI.createNotification(
+          c.userId,
+          c.id,
+          `Claim Status Update: ${newStatus}`,
+          `Your claim ${c.id} status is now ${newStatus}. ${remarks || ''}`,
+          'STATUS_UPDATE'
+        );
+
+        notifyChange('CLAIM_UPDATED', c);
+        return c;
+      }
+      throw new Error('Claim not found.');
+    },
+
+    approveClaim: async (claimId, approvedAmount, deductible, copay, adminRemarks) => {
+      const isOnline = await checkServer();
+      if (isOnline) {
+        try {
+          const res = await fetch(`${API_BASE}/claims/approve`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ claimId, approvedAmount, deductible, copay, remarks: adminRemarks })
+          });
+          if (res.ok) {
+            const updated = await res.json();
+            notifyChange('CLAIM_UPDATED', updated);
+            return updated;
+          }
+        } catch (e) {}
+      }
+
+      initStorage();
+      const claims = JSON.parse(localStorage.getItem(KEYS.CLAIMS) || '[]');
+      const c = claims.find(x => x.id === claimId);
+      if (c) {
+        c.status = 'Approved';
+        c.approvedAmount = approvedAmount;
+        c.deductibleApplied = deductible;
+        c.copayApplied = copay;
+        const netPayout = Math.max(0, approvedAmount - deductible - copay);
+        c.netPayoutAmount = netPayout;
+        c.adminRemarks = adminRemarks;
+        c.patientRemarks = `Claim approved for net reimbursement of $${netPayout.toFixed(2)}. Pending financial payment.`;
+        const now = new Date().toISOString().replace('T', ' ').substring(0, 16);
+        c.statusHistory = c.statusHistory || [];
+        c.statusHistory.push({
+          status: 'Approved',
+          timestamp: now,
+          actor: 'Admin',
+          remarks: `Approved for $${netPayout.toFixed(2)} (Gross: $${approvedAmount}, Ded: $${deductible}, Copay: $${copay}).`
+        });
+        localStorage.setItem(KEYS.CLAIMS, JSON.stringify(claims));
+
+        await CareClaimAPI.createNotification(
+          c.userId,
+          c.id,
+          `Claim Approved: ${c.id}`,
+          `Your claim has been approved for $${netPayout.toFixed(2)}. Settlement will be disbursed shortly.`,
+          'APPROVAL'
+        );
+
+        notifyChange('CLAIM_UPDATED', c);
+        return c;
+      }
+      throw new Error('Claim not found.');
+    },
+
+    completePayment: async (claimId, paymentRef, paymentMethod, remarks) => {
+      const isOnline = await checkServer();
+      if (isOnline) {
+        try {
+          const res = await fetch(`${API_BASE}/claims/payment-complete`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ claimId, paymentReference: paymentRef, paymentMethod, remarks })
+          });
+          if (res.ok) {
+            const updated = await res.json();
+            notifyChange('CLAIM_UPDATED', updated);
+            return updated;
+          }
+        } catch (e) {}
+      }
+
+      initStorage();
+      const claims = JSON.parse(localStorage.getItem(KEYS.CLAIMS) || '[]');
+      const c = claims.find(x => x.id === claimId);
+      if (c) {
+        c.status = 'Payment Completed';
+        c.paymentStatus = 'COMPLETED';
+        const ref = paymentRef || 'TXN-EFT-' + Math.floor(100000 + Math.random() * 900000);
+        c.paymentReference = ref;
+        c.paymentMethod = paymentMethod || 'Direct Bank ACH / EFT';
+        const now = new Date().toISOString().replace('T', ' ').substring(0, 16);
+        c.paymentDate = now;
+        if (remarks) c.adminRemarks = remarks;
+
+        const payout = c.netPayoutAmount > 0 ? c.netPayoutAmount : c.approvedAmount;
+        c.patientRemarks = `Payment completed. Payout of $${payout.toFixed(2)} transferred under Ref: ${ref}.`;
+        c.statusHistory = c.statusHistory || [];
+        c.statusHistory.push({
+          status: 'Payment Completed',
+          timestamp: now,
+          actor: 'Finance Admin',
+          remarks: `Disbursed $${payout.toFixed(2)} via ${c.paymentMethod} (Ref: ${ref}).`
+        });
+
+        // Deduct from policy
+        const policies = JSON.parse(localStorage.getItem(KEYS.POLICIES) || '[]');
+        const pol = policies.find(p => p.id === c.policyId || p.policyNumber === c.policyNumber);
+        if (pol) {
+          pol.remainingSumInsured = Math.max(0, pol.remainingSumInsured - payout);
+          localStorage.setItem(KEYS.POLICIES, JSON.stringify(policies));
+          notifyChange('POLICY_UPDATED', pol);
+        }
+
+        localStorage.setItem(KEYS.CLAIMS, JSON.stringify(claims));
+
+        await CareClaimAPI.createNotification(
+          c.userId,
+          c.id,
+          `Payment Completed: $${payout.toFixed(2)} Disbursed`,
+          `Reimbursement payment disbursed under Ref: ${ref}. Check your bank statement.`,
+          'PAYMENT'
+        );
+
+        notifyChange('CLAIM_UPDATED', c);
+        return c;
+      }
+      throw new Error('Claim not found.');
+    },
+
+    rejectClaim: async (claimId, rejectionReason, remarks) => {
+      const isOnline = await checkServer();
+      if (isOnline) {
+        try {
+          const res = await fetch(`${API_BASE}/claims/reject`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ claimId, rejectionReason, remarks })
+          });
+          if (res.ok) {
+            const updated = await res.json();
+            notifyChange('CLAIM_UPDATED', updated);
+            return updated;
+          }
+        } catch (e) {}
+      }
+
+      initStorage();
+      const claims = JSON.parse(localStorage.getItem(KEYS.CLAIMS) || '[]');
+      const c = claims.find(x => x.id === claimId);
+      if (c) {
+        c.status = 'Rejected';
+        c.rejectionReason = rejectionReason;
+        c.adminRemarks = remarks;
+        c.paymentStatus = 'NOT_APPLICABLE';
+        c.patientRemarks = `Claim rejected. Reason: ${rejectionReason}`;
+        const now = new Date().toISOString().replace('T', ' ').substring(0, 16);
+        c.statusHistory = c.statusHistory || [];
+        c.statusHistory.push({
+          status: 'Rejected',
+          timestamp: now,
+          actor: 'Admin',
+          remarks: `Claim rejected: ${rejectionReason}`
+        });
+        localStorage.setItem(KEYS.CLAIMS, JSON.stringify(claims));
+
+        await CareClaimAPI.createNotification(
+          c.userId,
+          c.id,
+          `Claim Rejected: ${c.id}`,
+          `Your claim has been rejected. Reason: ${rejectionReason}`,
+          'STATUS_UPDATE'
+        );
+
+        notifyChange('CLAIM_UPDATED', c);
+        return c;
+      }
+      throw new Error('Claim not found.');
+    },
+
+    // 4. Notifications
+    getNotifications: async (userId) => {
+      const isOnline = await checkServer();
+      if (isOnline) {
+        try {
+          const res = await fetch(`${API_BASE}/notifications?userId=${encodeURIComponent(userId || '')}`);
+          if (res.ok) return await res.json();
+        } catch (e) {}
+      }
+
+      initStorage();
+      let notifs = JSON.parse(localStorage.getItem(KEYS.NOTIFS) || '[]');
+      if (userId) notifs = notifs.filter(n => n.userId === userId);
+      return notifs.reverse();
+    },
+
+    createNotification: async (userId, claimId, title, message, type) => {
+      initStorage();
+      const notifs = JSON.parse(localStorage.getItem(KEYS.NOTIFS) || '[]');
+      const id = 'NTF-' + (100 + notifs.length + 1);
+      const now = new Date().toISOString().replace('T', ' ').substring(0, 16);
+      const n = { id, userId, claimId: claimId || '', title, message, type: type || 'STATUS_UPDATE', read: false, createdAt: now };
+      notifs.push(n);
+      localStorage.setItem(KEYS.NOTIFS, JSON.stringify(notifs));
+      notifyChange('NOTIFICATION_ADDED', n);
+      return n;
+    },
+
+    markNotificationRead: async (id) => {
+      initStorage();
+      const notifs = JSON.parse(localStorage.getItem(KEYS.NOTIFS) || '[]');
+      const n = notifs.find(x => x.id === id);
+      if (n) {
+        n.read = true;
+        localStorage.setItem(KEYS.NOTIFS, JSON.stringify(notifs));
+        notifyChange('NOTIFICATION_READ', id);
+        return true;
+      }
+      return false;
+    },
+
+    markAllNotificationsRead: async (userId) => {
+      initStorage();
+      const notifs = JSON.parse(localStorage.getItem(KEYS.NOTIFS) || '[]');
+      notifs.forEach(n => {
+        if (!userId || n.userId === userId) n.read = true;
+      });
+      localStorage.setItem(KEYS.NOTIFS, JSON.stringify(notifs));
+      notifyChange('NOTIFICATIONS_CLEARED', userId);
+      return true;
+    },
+
+    // 5. Reports & Statistics
+    getStatistics: async () => {
+      const claims = await CareClaimAPI.getAllClaims();
+      let totalClaimed = 0;
+      let totalApproved = 0;
+      let totalPaid = 0;
+      let submitted = 0, underReview = 0, docsReq = 0, approved = 0, rejected = 0, paymentDone = 0;
+      const statusMap = {}, catMap = {}, officerMap = {};
+
+      claims.forEach(c => {
+        totalClaimed += (c.claimedAmount || 0);
+        totalApproved += (c.approvedAmount || 0);
+        if (c.status === 'Payment Completed') {
+          totalPaid += (c.netPayoutAmount || c.approvedAmount || 0);
+        }
+        const st = c.status || 'Submitted';
+        statusMap[st] = (statusMap[st] || 0) + 1;
+        if (st === 'Submitted') submitted++;
+        else if (st === 'Under Review') underReview++;
+        else if (st === 'Documents Required') docsReq++;
+        else if (st === 'Approved') approved++;
+        else if (st === 'Rejected') rejected++;
+        else if (st === 'Payment Completed') paymentDone++;
+
+        const cat = c.ailmentCategory || 'General';
+        catMap[cat] = (catMap[cat] || 0) + 1;
+
+        const off = c.assignedOfficerName || 'Unassigned';
+        officerMap[off] = (officerMap[off] || 0) + 1;
+      });
+
+      const decided = approved + rejected + paymentDone;
+      const approvalRate = decided > 0 ? (((approved + paymentDone) / decided) * 100).toFixed(1) : 0;
+
+      return {
+        totalClaims: claims.length,
+        totalClaimedAmount: totalClaimed,
+        totalApprovedAmount: totalApproved,
+        totalPaidAmount: totalPaid,
+        submittedCount: submitted,
+        underReviewCount: underReview,
+        docsRequiredCount: docsReq,
+        approvedCount: approved,
+        rejectedCount: rejected,
+        paymentCompletedCount: paymentDone,
+        pendingActionCount: submitted + underReview + docsReq,
+        approvalRate: parseFloat(approvalRate),
+        statusDistribution: statusMap,
+        categoryDistribution: catMap,
+        officerWorkload: officerMap
+      };
+    },
+
+    generateCsv: async () => {
+      const claims = await CareClaimAPI.getAllClaims();
+      let csv = 'Claim ID,Policy Number,Patient Name,Hospital,Ailment Category,Claimed Amount,Approved Amount,Status,Assigned Officer,Date Submitted,Payment Ref\n';
+      claims.forEach(c => {
+        const row = [
+          `"${c.id}"`,
+          `"${c.policyNumber || ''}"`,
+          `"${c.patientName || ''}"`,
+          `"${c.hospitalName || ''}"`,
+          `"${c.ailmentCategory || ''}"`,
+          (c.claimedAmount || 0).toFixed(2),
+          (c.approvedAmount || 0).toFixed(2),
+          `"${c.status || ''}"`,
+          `"${c.assignedOfficerName || 'Unassigned'}"`,
+          `"${c.createdAt || ''}"`,
+          `"${c.paymentReference || 'N/A'}"`
+        ];
+        csv += row.join(',') + '\n';
+      });
+      return csv;
+    }
+  };
+})();
+
+</script>
 </body>
 </html>
